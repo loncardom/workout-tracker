@@ -507,3 +507,135 @@ h1 { margin: 0; font-size: 21px; line-height: 1.1; font-weight: 650; }
     border-radius: 20px;
   }
 }
+
+/* Exercise graphics */
+.exercise-thumb {
+  overflow: hidden;
+}
+.exercise-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.exercise-svg.compact {
+  width: 40px;
+  height: 40px;
+}
+.exercise-svg .machine-frame,
+.exercise-svg .equipment {
+  fill: none;
+  stroke: #b7bdc6;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.exercise-svg .head {
+  fill: #8c949f;
+}
+.exercise-svg .torso-line,
+.exercise-svg .limb {
+  fill: none;
+  stroke: #56606b;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.exercise-svg .equipment {
+  stroke: var(--accent);
+  stroke-width: 5;
+}
+.exercise-svg .motion {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: exercisePulse 1.35s ease-in-out infinite alternate;
+}
+.graphic-fly .arms,
+.graphic-reverse-fly .arms,
+.graphic-lateral-raise .arms {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: armOpen 1.35s ease-in-out infinite alternate;
+}
+.graphic-pulldown .arms,
+.graphic-pushdown .arms {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: verticalPull 1.35s ease-in-out infinite alternate;
+}
+.graphic-front-raise .arms,
+.graphic-curl .forearms {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: armRaise 1.35s ease-in-out infinite alternate;
+}
+.graphic-row .arms {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rowPull 1.35s ease-in-out infinite alternate;
+}
+.graphic-squat .legs,
+.graphic-leg-extension .legs,
+.graphic-leg-curl .legs,
+.graphic-hip-thrust .legs,
+.graphic-calf-raise .legs {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: legMove 1.35s ease-in-out infinite alternate;
+}
+@keyframes exercisePulse {
+  from { transform: translateY(2px); }
+  to { transform: translateY(-2px); }
+}
+@keyframes armOpen {
+  from { transform: scaleX(.78); }
+  to { transform: scaleX(1.08); }
+}
+@keyframes verticalPull {
+  from { transform: translateY(-7px); }
+  to { transform: translateY(7px); }
+}
+@keyframes armRaise {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(8deg); }
+}
+@keyframes rowPull {
+  from { transform: translateX(5px); }
+  to { transform: translateX(-6px); }
+}
+@keyframes legMove {
+  from { transform: translateY(-2px) scaleY(.92); }
+  to { transform: translateY(4px) scaleY(1.04); }
+}
+.exercise-animation .exercise-svg {
+  width: min(92%, 430px);
+  height: 190px;
+}
+.prescription {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -2px 0 18px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: #176cc7;
+}
+.prescription strong {
+  font-size: 16px;
+}
+.prescription span {
+  font-size: 12px;
+  font-weight: 700;
+}
+.optional-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #f1f3f6;
+  color: #7a818b;
+  font-size: 10px;
+  font-weight: 750;
+  vertical-align: 2px;
+}
