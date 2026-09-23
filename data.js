@@ -4,10 +4,10 @@ window.WORKOUTS = [
     name: "Upper",
     description: "Chest, back, shoulders and arms",
     exercises: [
-      { id: "machine-chest-press", name: "Machine Chest Press", target: "Chest", unit: "lb" },
-      { id: "lat-pulldown", name: "Lat Pulldown", target: "Back", unit: "lb" },
-      { id: "seated-cable-row", name: "Seated Cable Row", target: "Back", unit: "lb" },
-      { id: "cable-lateral-raise", name: "Cable Lateral Raise", target: "Shoulders", unit: "lb" }
+      { id: "machine-chest-press", name: "Machine Chest Press", unit: "lb", equipment: "Machine", primary: ["Chest"], secondary: ["Front delts", "Triceps"] },
+      { id: "lat-pulldown", name: "Lat Pulldown", unit: "lb", equipment: "Cable", primary: ["Lats"], secondary: ["Biceps", "Upper back"] },
+      { id: "seated-cable-row", name: "Seated Cable Row", unit: "lb", equipment: "Cable", primary: ["Mid back", "Lats"], secondary: ["Biceps", "Rear delts"] },
+      { id: "cable-lateral-raise", name: "Cable Lateral Raise", unit: "lb", equipment: "Cable", primary: ["Side delts"], secondary: ["Upper traps"] }
     ]
   },
   {
@@ -15,10 +15,10 @@ window.WORKOUTS = [
     name: "Lower",
     description: "Quads, hamstrings, glutes and calves",
     exercises: [
-      { id: "leg-press", name: "Leg Press", target: "Quads / Glutes", unit: "lb" },
-      { id: "seated-leg-curl", name: "Seated Leg Curl", target: "Hamstrings", unit: "lb" },
-      { id: "leg-extension", name: "Leg Extension", target: "Quads", unit: "lb" },
-      { id: "calf-raise", name: "Calf Raise", target: "Calves", unit: "lb" }
+      { id: "leg-press", name: "Leg Press", unit: "lb", equipment: "Machine", primary: ["Quads", "Glutes"], secondary: ["Hamstrings"] },
+      { id: "seated-leg-curl", name: "Seated Leg Curl", unit: "lb", equipment: "Machine", primary: ["Hamstrings"], secondary: ["Calves"] },
+      { id: "leg-extension", name: "Leg Extension", unit: "lb", equipment: "Machine", primary: ["Quads"], secondary: [] },
+      { id: "calf-raise", name: "Calf Raise", unit: "lb", equipment: "Machine", primary: ["Calves"], secondary: [] }
     ]
   },
   {
@@ -26,10 +26,10 @@ window.WORKOUTS = [
     name: "Push",
     description: "Chest, shoulders and triceps",
     exercises: [
-      { id: "pec-deck", name: "Pec Deck", target: "Chest", unit: "lb" },
-      { id: "machine-shoulder-press", name: "Machine Shoulder Press", target: "Shoulders", unit: "lb" },
-      { id: "cable-lateral-raise", name: "Cable Lateral Raise", target: "Shoulders", unit: "lb" },
-      { id: "rope-pushdown", name: "Rope Triceps Pushdown", target: "Triceps", unit: "lb" }
+      { id: "pec-deck", name: "Pec Deck", unit: "lb", equipment: "Machine", primary: ["Chest"], secondary: ["Front delts"] },
+      { id: "machine-shoulder-press", name: "Machine Shoulder Press", unit: "lb", equipment: "Machine", primary: ["Front delts", "Side delts"], secondary: ["Triceps", "Upper chest"] },
+      { id: "cable-lateral-raise", name: "Cable Lateral Raise", unit: "lb", equipment: "Cable", primary: ["Side delts"], secondary: ["Upper traps"] },
+      { id: "rope-pushdown", name: "Rope Triceps Pushdown", unit: "lb", equipment: "Cable", primary: ["Triceps"], secondary: [] }
     ]
   },
   {
@@ -37,10 +37,10 @@ window.WORKOUTS = [
     name: "Pull",
     description: "Back, rear delts and biceps",
     exercises: [
-      { id: "neutral-pulldown", name: "Neutral-Grip Pulldown", target: "Back", unit: "lb" },
-      { id: "chest-supported-row", name: "Chest-Supported Row", target: "Back", unit: "lb" },
-      { id: "reverse-pec-deck", name: "Reverse Pec Deck", target: "Rear Delts", unit: "lb" },
-      { id: "cable-curl", name: "Cable Curl", target: "Biceps", unit: "lb" }
+      { id: "neutral-pulldown", name: "Neutral-Grip Pulldown", unit: "lb", equipment: "Cable", primary: ["Lats"], secondary: ["Biceps", "Upper back"] },
+      { id: "chest-supported-row", name: "Chest-Supported Row", unit: "lb", equipment: "Machine / Dumbbells", primary: ["Mid back", "Lats"], secondary: ["Rear delts", "Biceps"] },
+      { id: "reverse-pec-deck", name: "Reverse Pec Deck", unit: "lb", equipment: "Machine", primary: ["Rear delts"], secondary: ["Upper back"] },
+      { id: "cable-curl", name: "Cable Curl", unit: "lb", equipment: "Cable", primary: ["Biceps"], secondary: ["Forearms"] }
     ]
   },
   {
@@ -48,10 +48,10 @@ window.WORKOUTS = [
     name: "Legs",
     description: "A second lower-body day",
     exercises: [
-      { id: "hack-squat", name: "Hack Squat", target: "Quads / Glutes", unit: "lb" },
-      { id: "romanian-deadlift", name: "Romanian Deadlift", target: "Hamstrings / Glutes", unit: "lb" },
-      { id: "lying-leg-curl", name: "Lying Leg Curl", target: "Hamstrings", unit: "lb" },
-      { id: "calf-raise", name: "Calf Raise", target: "Calves", unit: "lb" }
+      { id: "hack-squat", name: "Hack Squat", unit: "lb", equipment: "Machine", primary: ["Quads", "Glutes"], secondary: ["Hamstrings"] },
+      { id: "romanian-deadlift", name: "Romanian Deadlift", unit: "lb", equipment: "Barbell / Dumbbells", primary: ["Hamstrings", "Glutes"], secondary: ["Lower back", "Forearms"] },
+      { id: "lying-leg-curl", name: "Lying Leg Curl", unit: "lb", equipment: "Machine", primary: ["Hamstrings"], secondary: ["Calves"] },
+      { id: "calf-raise", name: "Calf Raise", unit: "lb", equipment: "Machine", primary: ["Calves"], secondary: [] }
     ]
   }
 ];
