@@ -9,9 +9,10 @@
   const toast = document.getElementById("toast");
 
   let view = "home";
-  let active = load(ACTIVE_KEY, null);
+  let statsTimer = null;
+  let active = hydrateActive(load(ACTIVE_KEY, null));
 
-  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, ch => ({
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   }[ch]));
 
@@ -32,16 +33,68 @@
     return load(HISTORY_KEY, []);
   }
 
+  function findDefinition(exerciseId) {
+    for (const routine of window.WORKOUTS) {
+      const found = routine.exercises.find(ex => ex.id === exerciseId);
+      if (found) return found;
+    }
+    return null;
+  }
+
+  function emptySet(source = {}) {
+    return {
+      weight: source.weight ?? "",
+      reps: source.reps ?? "",
+      completed: Boolean(source.completed)
+    };
+  }
+
+  function hydrateActive(session) {
+    if (!session?.exercises) return session;
+
+    session.exercises = session.exercises.map(ex => {
+      const def = findDefinition(ex.exerciseId) || {};
+      const existing = Array.isArray(ex.sets) ? ex.sets : [];
+      const sets = existing.length
+        ? existing.map(s => ({
+            weight: s.weight ?? "",
+            reps: s.reps ?? "",
+            completed: s.completed ?? true
+          }))
+        : [emptySet(), emptySet(), emptySet()];
+
+      return {
+        exerciseId: ex.exerciseId,
+        name: ex.name || def.name || "Exercise",
+        unit: ex.unit || def.unit || "lb",
+        equipment: ex.equipment || def.equipment || "",
+        primary: ex.primary || def.primary || [ex.target].filter(Boolean),
+        secondary: ex.secondary || def.secondary || [],
+        sets
+      };
+    });
+
+    return session;
+  }
+
   function flash(message) {
     toast.textContent = message;
     toast.classList.add("show");
     clearTimeout(flash.timer);
-    flash.timer = setTimeout(() => toast.classList.remove("show"), 1800);
+    flash.timer = setTimeout(() => toast.classList.remove("show"), 1700);
   }
 
-  function setChrome(title, canBack = false) {
+  function stopStatsTimer() {
+    if (statsTimer) clearInterval(statsTimer);
+    statsTimer = null;
+  }
+
+  function setChrome(title, canBack = false, finish = false) {
     pageTitle.textContent = title;
     backButton.classList.toggle("hidden", !canBack);
+    menuButton.classList.toggle("finish-button", finish);
+    menuButton.textContent = finish ? "Finish" : "⚙";
+    menuButton.setAttribute("aria-label", finish ? "Finish workout" : "Open settings");
   }
 
   function formatDate(iso) {
@@ -50,50 +103,68 @@
     }).format(new Date(iso));
   }
 
+  function formatDuration(ms) {
+    const seconds = Math.max(0, Math.floor(ms / 1000));
+    const minutes = Math.floor(seconds / 60);
+    const rest = seconds % 60;
+    return minutes ? ${minutes} + ":" + String(rest).padStart(2, "0") : ${rest} + "s";
+  }
+
   function lastRoutineSession(routineId) {
     return getHistory().find(item => item.routineId === routineId);
   }
 
   function lastExercisePerformance(exerciseId) {
     for (const session of getHistory()) {
-      const found = session.exercises.find(ex => ex.exerciseId === exerciseId && ex.sets.length);
+      const found = session.exercises?.find(ex => ex.exerciseId === exerciseId && ex.sets?.length);
       if (found) return found;
     }
     return null;
   }
 
+  function previousSet(exerciseId, setIndex) {
+    const previous = lastExercisePerformance(exerciseId);
+    return previous?.sets?.[setIndex] || null;
+  }
+
   function renderHome() {
+    stopStatsTimer();
     view = "home";
-    setChrome("Workout Tracker", false);
+    setChrome("Workout Tracker", false, false);
+    backButton.onclick = renderHome;
+    menuButton.onclick = renderSettings;
     const history = getHistory();
 
     app.innerHTML = `
-      <section class="hero">
-        <h2>Pick a workout</h2>
-        <p>Your workout history stays only in this browser unless you export it.</p>
+      <section class="hero home-hero">
+        <h2>Workouts</h2>
+        <p>Choose a routine. Your workout history stays on this device.</p>
       </section>
 
       ${active ? `
-        <div class="card">
-          <h3>Workout in progress</h3>
-          <p class="muted">${esc(active.routineName)} · exercise ${active.exerciseIndex + 1} of ${active.exercises.length}</p>
-          <div class="actions">
-            <button class="button primary" id="resumeWorkout">Resume workout</button>
-            <button class="button danger" id="discardWorkout">Discard workout</button>
+        <div class="resume-card">
+          <div>
+            <span class="mini-label">IN PROGRESS</span>
+            <h3>${esc(active.routineName)}</h3>
+          </div>
+          <div class="resume-actions">
+            <button class="text-button" id="discardWorkout">Discard</button>
+            <button class="pill-button" id="resumeWorkout">Resume</button>
           </div>
         </div>
       ` : ""}
 
-      <div class="section-title">5-day routine</div>
-      <div class="stack">
-        ${window.WORKOUTS.map(routine => {
+      <div class="routine-list">
+        ${window.WORKOUTS.map((routine, index) => {
           const last = lastRoutineSession(routine.id);
           return `
-            <button class="routine-card" data-routine="${esc(routine.id)}">
-              <div>
-                <h3>${esc(routine.name)}</h3>
-                <p>${esc(routine.description)} · ${routine.exercises.length} exercises${last ? ` · last ${formatDate(last.completedAt)}` : ""}</p>
-              </div>
+            <button class="routine-row" data-routine="${esc(routine.id)}">
+              <span class="routine-index">${index + 1}</span>
+              <span class="routine-main">
+                <strong>${esc(routine.name)}</strong>
+                <span>${routine.exercises.length} exercises · ${esc(routine.description)}</span>
+                ${last ? `<small>Last: ${formatDate(last.completedAt)}</small>` : ""}
+              </span>
               <span class="chevron">›</span>
             </button>
           `;
@@ -101,19 +172,15 @@
       </div>
 
       ${history.length ? `
-        <div class="section-title">Recent</div>
-        <button class="card routine-card" id="openHistory">
-          <div>
-            <h3>${esc(history[0].routineName)}</h3>
-            <p>${formatDate(history[0].completedAt)} · ${history[0].exercises.length} exercises</p>
-          </div>
-          <span class="chevron">›</span>
+        <button class="history-link" id="openHistory">
+          <span>Workout history</span>
+          <span>${history.length} saved ›</span>
         </button>
       ` : ""}
     `;
 
     document.querySelectorAll("[data-routine]").forEach(btn => {
-      btn.addEventListener("click", () => startWorkout(btn.dataset.routine));
+      btn.onclick = () => startWorkout(btn.dataset.routine);
     });
 
     document.getElementById("resumeWorkout")?.addEventListener("click", renderWorkout);
@@ -137,131 +204,246 @@
       routineId: routine.id,
       routineName: routine.name,
       startedAt: new Date().toISOString(),
-      exerciseIndex: 0,
-      exercises: routine.exercises.map(ex => ({
-        exerciseId: ex.id,
-        name: ex.name,
-        target: ex.target,
-        unit: ex.unit,
-        sets: []
-      }))
+      exercises: routine.exercises.map(ex => {
+        const previous = lastExercisePerformance(ex.id);
+        const rowCount = Math.max(3, previous?.sets?.length || 0);
+
+        return {
+          exerciseId: ex.id,
+          name: ex.name,
+          unit: ex.unit,
+          equipment: ex.equipment,
+          primary: ex.primary,
+          secondary: ex.secondary,
+          sets: Array.from({ length: rowCount }, (_, i) => emptySet(previous?.sets?.[i]))
+        };
+      })
     };
 
     save(ACTIVE_KEY, active);
     renderWorkout();
   }
 
+  function workoutTotals() {
+    let setCount = 0;
+    let volume = 0;
+
+    for (const ex of active.exercises) {
+      for (const set of ex.sets) {
+        if (!set.completed) continue;
+        const weight = Number(set.weight);
+        const reps = Number(set.reps);
+        if (Number.isFinite(weight) && Number.isFinite(reps)) {
+          volume += weight * reps;
+          setCount += 1;
+        }
+      }
+    }
+
+    return { setCount, volume };
+  }
+
   function renderWorkout() {
     if (!active) return renderHome();
 
+    stopStatsTimer();
     view = "workout";
-    setChrome(active.routineName, true);
+    setChrome("Log Workout", true, true);
+    backButton.onclick = renderHome;
+    menuButton.onclick = finishWorkout;
 
-    const index = active.exerciseIndex;
-    const ex = active.exercises[index];
-    const previous = lastExercisePerformance(ex.exerciseId);
+    const totals = workoutTotals();
 
     app.innerHTML = `
-      <section class="workout-head">
-        <div class="progress">
-          ${active.exercises.map((_, i) => `<span class="${i <= index ? "done" : ""}"></span>`).join("")}
+      <section class="workout-summary">
+        <div>
+          <span>Duration</span>
+          <strong id="durationStat">${formatDuration(Date.now() - new Date(active.startedAt).getTime())}</strong>
         </div>
-        <h2 class="exercise-title">${esc(ex.name)}</h2>
-        <div class="exercise-meta">${esc(ex.target)} · Exercise ${index + 1} of ${active.exercises.length}</div>
+        <div>
+          <span>Volume</span>
+          <strong id="volumeStat">${Math.round(totals.volume).toLocaleString()} lb</strong>
+        </div>
+        <div>
+          <span>Sets</span>
+          <strong id="setsStat">${totals.setCount}</strong>
+        </div>
       </section>
 
-      <div class="demo" aria-label="Exercise media placeholder"></div>
-
-      <div class="previous">
-        <strong>LAST TIME</strong>
-        ${previous
-          ? previous.sets.map(s => `${esc(s.weight)} ${esc(ex.unit)} × ${esc(s.reps)}`).join(" · ")
-          : "No previous sets recorded."}
-      </div>
-
-      <div class="section-title">Today</div>
-      <div class="set-list">
-        ${ex.sets.length
-          ? ex.sets.map((s, i) => `
-              <div class="set-row">
-                <span class="set-num">SET ${i + 1}</span>
-                <span class="set-value">${esc(s.weight)} ${esc(ex.unit)} × ${esc(s.reps)}</span>
-                <button class="remove-set" data-remove-set="${i}" aria-label="Remove set">×</button>
-              </div>
-            `).join("")
-          : `<div class="note">No sets added yet.</div>`}
-      </div>
-
-      <div class="input-grid">
-        <div class="field">
-          <label for="weightInput">WEIGHT (${esc(ex.unit)})</label>
-          <input id="weightInput" inputmode="decimal" type="number" min="0" step="0.5" placeholder="0">
-        </div>
-        <div class="field">
-          <label for="repsInput">REPS</label>
-          <input id="repsInput" inputmode="numeric" type="number" min="1" step="1" placeholder="0">
-        </div>
-      </div>
-
-      <div class="actions">
-        <button class="button secondary" id="addSet">Add set</button>
-        <button class="button primary" id="nextExercise">
-          ${index === active.exercises.length - 1 ? "Finish workout" : "Next exercise"}
-        </button>
+      <div class="exercise-list">
+        ${active.exercises.map((ex, exerciseIndex) => exerciseCard(ex, exerciseIndex)).join("")}
       </div>
     `;
 
-    const weightInput = document.getElementById("weightInput");
-    const repsInput = document.getElementById("repsInput");
-    const reference = ex.sets.at(-1) || previous?.sets?.[0];
+    statsTimer = setInterval(() => {
+      const el = document.getElementById("durationStat");
+      if (el && active) el.textContent = formatDuration(Date.now() - new Date(active.startedAt).getTime());
+    }, 1000);
 
-    if (reference) {
-      weightInput.value = reference.weight ?? "";
-      repsInput.value = reference.reps ?? "";
-    }
-
-    function addSet() {
-      const weight = Number(weightInput.value);
-      const reps = Number(repsInput.value);
-
-      if (!Number.isFinite(weight) || weight < 0 || !Number.isInteger(reps) || reps < 1) {
-        flash("Enter a valid weight and reps");
-        return;
-      }
-
-      ex.sets.push({ weight, reps });
-      save(ACTIVE_KEY, active);
-      renderWorkout();
-    }
-
-    document.getElementById("addSet").addEventListener("click", addSet);
-    repsInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") addSet();
+    document.querySelectorAll("[data-exercise-detail]").forEach(btn => {
+      btn.onclick = () => openExerciseDetail(Number(btn.dataset.exerciseDetail));
     });
 
-    document.querySelectorAll("[data-remove-set]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        ex.sets.splice(Number(btn.dataset.removeSet), 1);
+    document.querySelectorAll("[data-set-input]").forEach(input => {
+      input.addEventListener("input", () => {
+        const [exerciseIndex, setIndex, field] = input.dataset.setInput.split(":");
+        const set = active.exercises[Number(exerciseIndex)].sets[Number(setIndex)];
+        set[field] = input.value;
         save(ACTIVE_KEY, active);
-        renderWorkout();
       });
     });
 
-    document.getElementById("nextExercise").addEventListener("click", () => {
-      if (index === active.exercises.length - 1) {
-        finishWorkout();
-      } else {
-        active.exerciseIndex += 1;
+    document.querySelectorAll("[data-complete-set]").forEach(btn => {
+      btn.onclick = () => {
+        const [exerciseIndex, setIndex] = btn.dataset.completeSet.split(":").map(Number);
+        const set = active.exercises[exerciseIndex].sets[setIndex];
+
+        if (!set.completed) {
+          const weight = Number(set.weight);
+          const reps = Number(set.reps);
+          if (!Number.isFinite(weight) || weight < 0 || !Number.isInteger(reps) || reps < 1) {
+            flash("Enter weight and reps first");
+            return;
+          }
+        }
+
+        set.completed = !set.completed;
         save(ACTIVE_KEY, active);
         renderWorkout();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      };
+    });
+
+    document.querySelectorAll("[data-add-set]").forEach(btn => {
+      btn.onclick = () => {
+        const exerciseIndex = Number(btn.dataset.addSet);
+        const ex = active.exercises[exerciseIndex];
+        const last = ex.sets.at(-1) || {};
+        ex.sets.push(emptySet({ weight: last.weight, reps: last.reps }));
+        save(ACTIVE_KEY, active);
+        renderWorkout();
+      };
+    });
+  }
+
+  function exerciseCard(ex, exerciseIndex) {
+    return `
+      <article class="exercise-card">
+        <button class="exercise-heading" data-exercise-detail="${exerciseIndex}">
+          <span class="exercise-thumb" aria-hidden="true">↕</span>
+          <span class="exercise-heading-copy">
+            <strong>${esc(ex.name)}</strong>
+            <small>${esc((ex.primary || []).join(" · "))} · tap for details</small>
+          </span>
+          <span class="info-dot">i</span>
+        </button>
+
+        <div class="set-table">
+          <div class="set-table-head">
+            <span>SET</span>
+            <span>PREVIOUS</span>
+            <span>${esc(ex.unit.toUpperCase())}</span>
+            <span>REPS</span>
+            <span>✓</span>
+          </div>
+
+          ${ex.sets.map((set, setIndex) => {
+            const previous = previousSet(ex.exerciseId, setIndex);
+            const previousText = previous
+              ? ${previous.weight} + " × " + ${previous.reps}
+              : "—";
+
+            return `
+              <div class="set-entry ${set.completed ? "complete" : ""}">
+                <span class="set-badge">${setIndex + 1}</span>
+                <span class="previous-value">${esc(previousText)}</span>
+                <input
+                  aria-label="Weight for set ${setIndex + 1}"
+                  inputmode="decimal"
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  value="${esc(set.weight)}"
+                  data-set-input="${exerciseIndex}:${setIndex}:weight">
+                <input
+                  aria-label="Reps for set ${setIndex + 1}"
+                  inputmode="numeric"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="${esc(set.reps)}"
+                  data-set-input="${exerciseIndex}:${setIndex}:reps">
+                <button class="check-button" data-complete-set="${exerciseIndex}:${setIndex}" aria-label="Mark set complete">✓</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+
+        <button class="add-set-button" data-add-set="${exerciseIndex}">＋ Add Set</button>
+      </article>
+    `;
+  }
+
+  function openExerciseDetail(exerciseIndex) {
+    const ex = active.exercises[exerciseIndex];
+    document.querySelector(".detail-overlay")?.remove();
+
+    const overlay = document.createElement("div");
+    overlay.className = "detail-overlay";
+    overlay.innerHTML = `
+      <section class="detail-sheet" role="dialog" aria-modal="true" aria-label="${esc(ex.name)} details">
+        <div class="detail-handle"></div>
+        <div class="detail-top">
+          <div>
+            <span class="mini-label">EXERCISE</span>
+            <h2>${esc(ex.name)}</h2>
+            <p>${esc(ex.equipment || "Gym equipment")}</p>
+          </div>
+          <button class="close-detail" aria-label="Close">×</button>
+        </div>
+
+        <div class="exercise-animation" aria-label="Exercise animation placeholder">
+          <div class="animated-lifter">
+            <span class="head"></span>
+            <span class="torso"></span>
+            <span class="bar"></span>
+          </div>
+          <span>Animation / GIF goes here</span>
+        </div>
+
+        <div class="muscle-section">
+          <span class="muscle-label">PRIMARY</span>
+          <div class="chips">
+            ${(ex.primary || []).map(muscle => `<span class="chip primary-chip">${esc(muscle)}</span>`).join("")}
+          </div>
+        </div>
+
+        ${ex.secondary?.length ? `
+          <div class="muscle-section">
+            <span class="muscle-label">SECONDARY</span>
+            <div class="chips">
+              ${ex.secondary.map(muscle => `<span class="chip">${esc(muscle)}</span>`).join("")}
+            </div>
+          </div>
+        ` : ""}
+
+        <p class="detail-note">The layout is ready for a real exercise GIF. The first test build still uses a placeholder so we can finalize the routine before adding media assets.</p>
+      </section>
+    `;
+
+    document.body.appendChild(overlay);
+    overlay.querySelector(".close-detail").onclick = () => overlay.remove();
+    overlay.addEventListener("click", event => {
+      if (event.target === overlay) overlay.remove();
     });
   }
 
   function finishWorkout() {
-    const history = getHistory();
+    if (!active) return;
 
+    const totals = workoutTotals();
+    if (!totals.setCount && !confirm("No sets are marked complete. Finish this workout anyway?")) return;
+
+    const history = getHistory();
     history.unshift({
       id: active.id,
       routineId: active.routineId,
@@ -273,41 +455,47 @@
         name: ex.name,
         unit: ex.unit,
         sets: ex.sets
+          .filter(set => set.completed)
+          .map(set => ({ weight: Number(set.weight), reps: Number(set.reps) }))
       }))
     });
 
     save(HISTORY_KEY, history);
     active = null;
     localStorage.removeItem(ACTIVE_KEY);
+    stopStatsTimer();
     flash("Workout saved");
     renderHistory();
   }
 
   function renderHistory() {
+    stopStatsTimer();
     view = "history";
-    setChrome("History", true);
+    setChrome("History", true, false);
+    backButton.onclick = renderHome;
+    menuButton.onclick = renderSettings;
     const history = getHistory();
 
     app.innerHTML = `
       <section class="hero">
         <h2>Workout history</h2>
         <p>${history.length
-          ? `${history.length} saved workout${history.length === 1 ? "" : "s"} on this device.`
+          ? ${history.length} + " saved workout" + (history.length === 1 ? "" : "s") + " on this device."
           : "No workouts saved yet."}</p>
       </section>
-      <div class="stack">
+      <div class="history-stack">
         ${history.map(session => `
-          <article class="card history-item">
+          <article class="history-card">
             <div class="history-top">
               <h3>${esc(session.routineName)}</h3>
-              <span class="history-date">${formatDate(session.completedAt)}</span>
+              <span>${formatDate(session.completedAt)}</span>
             </div>
             ${session.exercises.map(ex => `
               <div class="exercise-summary">
-                <strong>${esc(ex.name)}</strong><br>
-                ${ex.sets.length
-                  ? ex.sets.map(s => `${esc(s.weight)} ${esc(ex.unit)} × ${esc(s.reps)}`).join(" · ")
-                  : "No sets recorded"}
+                <strong>${esc(ex.name)}</strong>
+                <span>${ex.sets?.length
+                  ? ex.sets.map(s => ${esc(s.weight)} + " " + ${esc(ex.unit)} + " × " + ${esc(s.reps)}).join(" · ")
+                  : "No completed sets"}</span>
               </div>
             `).join("")}
           </article>
@@ -317,32 +505,32 @@
   }
 
   function renderSettings() {
+    stopStatsTimer();
     view = "settings";
-    setChrome("Settings", true);
+    setChrome("Settings", true, false);
+    backButton.onclick = renderHome;
+    menuButton.onclick = renderSettings;
     const count = getHistory().length;
 
     app.innerHTML = `
       <section class="hero">
         <h2>Data & backup</h2>
-        <p>Your history is stored in this browser's local storage. Nothing is sent to GitHub.</p>
+        <p>Your history is stored in this browser. Nothing is uploaded to GitHub.</p>
       </section>
 
-      <div class="card setting-row">
+      <div class="settings-card">
         <h3>Backup</h3>
-        <p class="muted">${count} saved workout${count === 1 ? "" : "s"}.</p>
+        <p>${count} saved workout${count === 1 ? "" : "s"}.</p>
         <button class="button primary" id="exportData">Export JSON backup</button>
         <button class="button secondary" id="importData">Import JSON backup</button>
       </div>
 
-      <div class="section-title">Danger zone</div>
-      <div class="card setting-row">
+      <div class="settings-card danger-card">
         <button class="button danger" id="clearHistory">Clear workout history</button>
       </div>
-
-      <p class="note">Deleting browser data, using private browsing, or changing devices can remove local history. Export a backup occasionally.</p>
     `;
 
-    document.getElementById("exportData").addEventListener("click", () => {
+    document.getElementById("exportData").onclick = () => {
       const payload = {
         version: 1,
         exportedAt: new Date().toISOString(),
@@ -352,33 +540,30 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `workout-tracker-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = "workout-tracker-backup-" + new Date().toISOString().slice(0, 10) + ".json";
       a.click();
       URL.revokeObjectURL(url);
-    });
+    };
 
-    document.getElementById("importData").addEventListener("click", () => importFile.click());
-
-    document.getElementById("clearHistory").addEventListener("click", () => {
+    document.getElementById("importData").onclick = () => importFile.click();
+    document.getElementById("clearHistory").onclick = () => {
       if (confirm("Permanently clear all workout history on this device?")) {
         localStorage.removeItem(HISTORY_KEY);
         flash("History cleared");
         renderSettings();
       }
-    });
+    };
   }
 
-  importFile.addEventListener("change", async () => {
+  importFile.onchange = async () => {
     const file = importFile.files?.[0];
     if (!file) return;
 
     try {
       const data = JSON.parse(await file.text());
-      if (!data || data.version !== 1 || !Array.isArray(data.history)) {
-        throw new Error("Bad backup");
-      }
+      if (!data || data.version !== 1 || !Array.isArray(data.history)) throw new Error("Bad backup");
 
-      if (confirm(`Import ${data.history.length} workouts and replace the history currently on this device?`)) {
+      if (confirm("Import " + data.history.length + " workouts and replace the history currently on this device?")) {
         save(HISTORY_KEY, data.history);
         flash("Backup imported");
         renderSettings();
@@ -388,10 +573,7 @@
     } finally {
       importFile.value = "";
     }
-  });
-
-  backButton.addEventListener("click", renderHome);
-  menuButton.addEventListener("click", renderSettings);
+  };
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
