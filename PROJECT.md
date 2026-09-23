@@ -17,7 +17,7 @@ This repository is a mobile-first static workout tracker intended for GitHub Pag
 - Each exercise shows set number, previous result, weight, reps, and a completion check.
 - The header shows duration, completed-set volume, and completed set count.
 - Tapping an exercise header opens a detail sheet showing equipment, primary/secondary muscles, and the media slot.
-- Real exercise GIFs are still intentionally deferred until the routine is finalized.
+- Each exercise now has an inline animated SVG movement graphic, target sets/reps, muscle metadata, equipment, and exercise-specific notes.
 
 ## Rules for future changes
 
@@ -29,3 +29,8 @@ This repository is a mobile-first static workout tracker intended for GitHub Pag
 6. Keep paths relative so GitHub project Pages works under \`/workout-tracker/\`.
 7. Increment the service-worker cache name after static changes when clients need a forced refresh.
 8. Preserve backwards compatibility with existing local workout history.
+
+
+## Current routine source
+
+The five-day routine is the wrist-conscious Upper / Lower / Push / Pull / Legs plan supplied by the user on 2026-09-23. Preserve its programmed set and rep ranges unless the user explicitly asks to change them.
