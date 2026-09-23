@@ -107,7 +107,7 @@
     const seconds = Math.max(0, Math.floor(ms / 1000));
     const minutes = Math.floor(seconds / 60);
     const rest = seconds % 60;
-    return minutes ? ${minutes} + ":" + String(rest).padStart(2, "0") : ${rest} + "s";
+    return minutes ? minutes + ":" + String(rest).padStart(2, "0") : rest + "s";
   }
 
   function lastRoutineSession(routineId) {
@@ -349,7 +349,7 @@
           ${ex.sets.map((set, setIndex) => {
             const previous = previousSet(ex.exerciseId, setIndex);
             const previousText = previous
-              ? ${previous.weight} + " × " + ${previous.reps}
+              ? previous.weight + " × " + previous.reps
               : "—";
 
             return `
@@ -480,7 +480,7 @@
       <section class="hero">
         <h2>Workout history</h2>
         <p>${history.length
-          ? ${history.length} + " saved workout" + (history.length === 1 ? "" : "s") + " on this device."
+          ? history.length + " saved workout" + (history.length === 1 ? "" : "s") + " on this device."
           : "No workouts saved yet."}</p>
       </section>
       <div class="history-stack">
@@ -494,7 +494,7 @@
               <div class="exercise-summary">
                 <strong>${esc(ex.name)}</strong>
                 <span>${ex.sets?.length
-                  ? ex.sets.map(s => ${esc(s.weight)} + " " + ${esc(ex.unit)} + " × " + ${esc(s.reps)}).join(" · ")
+                  ? ex.sets.map(s => esc(s.weight) + " " + esc(ex.unit) + " × " + esc(s.reps)).join(" · ")
                   : "No completed sets"}</span>
               </div>
             `).join("")}
