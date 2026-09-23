@@ -1,0 +1,18 @@
+{
+  "name": "Workout Tracker",
+  "short_name": "Workout",
+  "description": "A simple local-only workout routine tracker.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d10",
+  "theme_color": "#0b0d10",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
