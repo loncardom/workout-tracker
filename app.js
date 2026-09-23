@@ -153,18 +153,18 @@
     };
 
     const hideStandardTorso = type === "hip-thrust";
-    return \`
-      <svg class="exercise-svg graphic-\${esc(type)} \${compact ? "compact" : ""}" viewBox="0 0 160 120" role="img" aria-label="\${esc(ex.name)} exercise graphic">
+    return `
+      <svg class="exercise-svg graphic-${esc(type)} ${compact ? "compact" : ""}" viewBox="0 0 160 120" role="img" aria-label="${esc(ex.name)} exercise graphic">
         <g class="machine-frame">
           <path d="M18 108 H142"/>
           <path d="M25 108 V14"/>
         </g>
         <g class="figure motion">
-          \${hideStandardTorso ? "" : '<circle class="head" cx="80" cy="28" r="9"/><path class="torso-line" d="M80 38 L80 82"/><path class="limb legs" d="M80 82 L68 106 M80 82 L92 106"/>'}
-          \${poses[type] || poses.generic}
+          ${hideStandardTorso ? "" : '<circle class="head" cx="80" cy="28" r="9"/><path class="torso-line" d="M80 38 L80 82"/><path class="limb legs" d="M80 82 L68 106 M80 82 L92 106"/>'}
+          ${poses[type] || poses.generic}
         </g>
       </svg>
-    \`;
+    `;
   }
 
   function renderHome() {
