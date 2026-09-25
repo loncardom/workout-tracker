@@ -168,7 +168,7 @@
         <p>Choose a routine. Your workout history stays on this device.</p>
       </section>
 
-      ${active ? `
+      ${active?.startedAt ? `
         <div class="resume-card">
           <div>
             <span class="mini-label">IN PROGRESS</span>
@@ -224,13 +224,13 @@
   function startWorkout(routineId) {
     const routine = window.WORKOUTS.find(item => item.id === routineId);
     if (!routine) return;
-    if (active && !confirm("Replace the workout currently in progress?")) return;
+    if (active?.startedAt && !confirm("Replace the workout currently in progress?")) return;
 
     active = {
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
       routineId: routine.id,
       routineName: routine.name,
-      startedAt: new Date().toISOString(),
+      startedAt: null,
       exercises: routine.exercises.map(ex => {
         const previous = lastExercisePerformance(ex.id);
         const rowCount = ex.targetSets || 3;
@@ -252,8 +252,20 @@
       })
     };
 
-    save(ACTIVE_KEY, active);
     renderWorkout();
+  }
+
+  function ensureWorkoutStarted() {
+    if (!active || active.startedAt) return;
+
+    active.startedAt = new Date().toISOString();
+    save(ACTIVE_KEY, active);
+    flash("Workout started");
+  }
+
+  function workoutElapsedMs() {
+    if (!active?.startedAt) return 0;
+    return Date.now() - new Date(active.startedAt).getTime();
   }
 
   function workoutTotals() {
@@ -281,7 +293,10 @@
     stopStatsTimer();
     view = "workout";
     setChrome("Log Workout", true, true);
-    backButton.onclick = renderHome;
+    backButton.onclick = () => {
+      if (active && !active.startedAt) active = null;
+      renderHome();
+    };
     menuButton.onclick = finishWorkout;
 
     const totals = workoutTotals();
@@ -290,7 +305,7 @@
       <section class="workout-summary">
         <div>
           <span>Duration</span>
-          <strong id="durationStat">${formatDuration(Date.now() - new Date(active.startedAt).getTime())}</strong>
+          <strong id="durationStat">${formatDuration(workoutElapsedMs())}</strong>
         </div>
         <div>
           <span>Volume</span>
@@ -309,7 +324,7 @@
 
     statsTimer = setInterval(() => {
       const el = document.getElementById("durationStat");
-      if (el && active) el.textContent = formatDuration(Date.now() - new Date(active.startedAt).getTime());
+      if (el && active) el.textContent = formatDuration(workoutElapsedMs());
     }, 1000);
 
     document.querySelectorAll("[data-exercise-detail]").forEach(btn => {
@@ -320,6 +335,8 @@
       input.addEventListener("input", () => {
         const [exerciseIndex, setIndex, field] = input.dataset.setInput.split(":");
         const set = active.exercises[Number(exerciseIndex)].sets[Number(setIndex)];
+
+        ensureWorkoutStarted();
         set[field] = input.value;
         save(ACTIVE_KEY, active);
       });
@@ -351,7 +368,7 @@
         const ex = active.exercises[exerciseIndex];
         const last = ex.sets.at(-1) || {};
         ex.sets.push(emptySet({ weight: last.weight, reps: last.reps }));
-        save(ACTIVE_KEY, active);
+        if (active.startedAt) save(ACTIVE_KEY, active);
         renderWorkout();
       };
     });
@@ -481,6 +498,13 @@
 
   function finishWorkout() {
     if (!active) return;
+
+    if (!active.startedAt) {
+      active = null;
+      localStorage.removeItem(ACTIVE_KEY);
+      renderHome();
+      return;
+    }
 
     const totals = workoutTotals();
     if (!totals.setCount && !confirm("No sets are marked complete. Finish this workout anyway?")) return;
