@@ -133,37 +133,24 @@
     return previous?.sets?.[setIndex] || null;
   }
 
-  function exerciseGraphic(ex, compact = false) {
-    const type = ex.graphic || "generic";
-    const poses = {
-      "fly": '<path class="limb arms" d="M80 48 L44 55 M80 48 L116 55"/><path class="limb forearms" d="M44 55 L32 72 M116 55 L128 72"/>',
-      "reverse-fly": '<path class="limb arms" d="M80 48 L43 43 M80 48 L117 43"/><path class="limb forearms" d="M43 43 L27 40 M117 43 L133 40"/>',
-      "row": '<path class="limb arms" d="M78 50 L104 58 M82 50 L108 64"/><path class="equipment" d="M109 61 L151 61"/>',
-      "pulldown": '<path class="limb arms" d="M78 48 L57 24 M82 48 L103 24"/><path class="equipment" d="M47 20 L113 20 M80 20 L80 5"/>',
-      "lateral-raise": '<path class="limb arms" d="M80 49 L43 48 M80 49 L117 48"/>',
-      "front-raise": '<path class="limb arms" d="M78 51 L52 36 M82 51 L108 36"/>',
-      "pushdown": '<path class="limb arms" d="M76 48 L66 67 M84 48 L94 67"/><path class="equipment" d="M80 6 L80 64 M65 67 L95 67"/>',
-      "curl": '<path class="limb arms" d="M76 48 L62 65 M84 48 L98 65"/><path class="limb forearms" d="M62 65 L70 47 M98 65 L90 47"/>',
-      "squat": '<path class="limb legs" d="M72 84 L57 101 L45 94 M88 84 L103 101 L115 94"/><path class="equipment" d="M44 38 L116 38"/>',
-      "leg-extension": '<path class="limb legs" d="M74 83 L66 103 M86 83 L115 87"/><path class="equipment" d="M48 78 L108 78 M52 82 L52 108"/>',
-      "leg-curl": '<path class="limb legs" d="M73 83 L58 91 L70 104 M87 83 L102 91 L90 104"/><path class="equipment" d="M45 77 L115 77"/>',
-      "hip-thrust": '<path class="torso-line" d="M48 70 L100 70"/><circle class="head" cx="38" cy="66" r="8"/><path class="limb legs" d="M98 70 L111 90 L122 88 M98 70 L90 91 L78 91"/><path class="equipment" d="M42 78 L112 78"/>',
-      "calf-raise": '<path class="limb legs" d="M72 82 L70 105 L61 105 M88 82 L90 105 L99 105"/><path class="equipment" d="M46 108 L114 108"/>',
-      "generic": '<path class="limb arms" d="M80 49 L58 67 M80 49 L102 67"/>'
-    };
+  function exerciseMedia(exerciseId) {
+    return window.EXERCISE_MEDIA?.[exerciseId] || null;
+  }
 
-    const hideStandardTorso = type === "hip-thrust";
+  function exerciseImage(ex, compact = false) {
+    const media = exerciseMedia(ex.exerciseId);
+    if (!media?.imageUrl) {
+      return `<span class="photo-fallback">${esc(ex.name.slice(0, 1))}</span>`;
+    }
+
     return `
-      <svg class="exercise-svg graphic-${esc(type)} ${compact ? "compact" : ""}" viewBox="0 0 160 120" role="img" aria-label="${esc(ex.name)} exercise graphic">
-        <g class="machine-frame">
-          <path d="M18 108 H142"/>
-          <path d="M25 108 V14"/>
-        </g>
-        <g class="figure motion">
-          ${hideStandardTorso ? "" : '<circle class="head" cx="80" cy="28" r="9"/><path class="torso-line" d="M80 38 L80 82"/><path class="limb legs" d="M80 82 L68 106 M80 82 L92 106"/>'}
-          ${poses[type] || poses.generic}
-        </g>
-      </svg>
+      <img
+        class="exercise-photo ${compact ? "compact" : ""}"
+        src="${esc(media.imageUrl)}"
+        alt="${esc(media.caption || ex.name)}"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+      >
     `;
   }
 
@@ -374,7 +361,7 @@
     return `
       <article class="exercise-card">
         <button class="exercise-heading" data-exercise-detail="${exerciseIndex}">
-          <span class="exercise-thumb" aria-hidden="true">${exerciseGraphic(ex, true)}</span>
+          <span class="exercise-thumb" aria-hidden="true">${exerciseImage(ex, true)}</span>
           <span class="exercise-heading-copy">
             <strong>${esc(ex.name)}${ex.optional ? ' <span class="optional-tag">Optional</span>' : ""}</strong>
             <small>${esc(ex.targetSets || ex.sets.length)} × ${esc(ex.reps || "reps")} · ${esc((ex.primary || []).join(" · "))}</small>
@@ -446,9 +433,18 @@
           <button class="close-detail" aria-label="Close">×</button>
         </div>
 
-        <div class="exercise-animation">
-          ${exerciseGraphic(ex)}
-          <span>Animated movement guide</span>
+        <div class="exercise-photo-panel">
+          ${exerciseImage(ex)}
+          ${exerciseMedia(ex.exerciseId)?.sourceUrl ? `
+            <a
+              class="image-source"
+              href="${esc(exerciseMedia(ex.exerciseId).sourceUrl)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Demo source: ${esc(exerciseMedia(ex.exerciseId).sourceName || "exercise reference")} ↗
+            </a>
+          ` : ""}
         </div>
 
         <div class="prescription">
