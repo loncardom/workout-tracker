@@ -301,3 +301,90 @@ window.WORKOUTS = [
     ]
   }
 ];
+
+window.EXERCISE_MEDIA = {
+  "pec-deck": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-bent-arm-pec-fly-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/pt-br/exercise/machine-bent-arm-pec-fly",
+    sourceName: "MuscleWiki",
+    caption: "Machine bent-arm pec fly / pec deck"
+  },
+  "chest-supported-row": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-chest-supported-t-bar-row-front.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/de-de/exercise/machine-chest-supported-t-bar-row",
+    sourceName: "MuscleWiki",
+    caption: "Chest-supported machine row"
+  },
+  "neutral-pulldown": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-neutral-pulldown-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/hi-in/exercise/neutral-pulldown",
+    sourceName: "MuscleWiki",
+    caption: "Neutral-grip pulldown"
+  },
+  "lateral-raise-machine": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-standing-lateral-raise-front.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/de-de/exercise/machine-standing-lateral-raise",
+    sourceName: "MuscleWiki",
+    caption: "Machine lateral raise"
+  },
+  "triceps-pressdown": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Cables-cable-push-down-front.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/cable-rope-pushdown",
+    sourceName: "MuscleWiki",
+    caption: "Cable triceps pushdown"
+  },
+  "hack-squat": {
+    imageUrl: "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2020/04/hack-squat-machine.gif?resize=600%2C600&ssl=1",
+    sourceUrl: "https://www.strengthlog.com/hack-squat-machine/",
+    sourceName: "StrengthLog",
+    caption: "Hack squat machine"
+  },
+  "leg-extension": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-machine-leg-extension-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/machine-leg-extension?model=m",
+    sourceName: "MuscleWiki",
+    caption: "Machine leg extension"
+  },
+  "seated-leg-curl": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-seated-leg-curl-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/seated-leg-curl",
+    sourceName: "MuscleWiki",
+    caption: "Seated leg curl"
+  },
+  "lying-leg-curl": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-seated-leg-curl-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/seated-leg-curl",
+    sourceName: "MuscleWiki",
+    caption: "Leg curl movement reference"
+  },
+  "hip-thrust-machine": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-hip-thrust-front.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/machine-hip-thrust",
+    sourceName: "MuscleWiki",
+    caption: "Machine hip thrust"
+  },
+  "calf-raise": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-machine-standing-calf-raises-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercises/calves",
+    sourceName: "MuscleWiki",
+    caption: "Machine standing calf raise"
+  },
+  "cuff-front-raise": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-plate-front-raise-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/plate-front-raise",
+    sourceName: "MuscleWiki",
+    caption: "Front-raise movement reference"
+  },
+  "reverse-pec-deck": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-reverse-fly-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/fa-ir/exercise/machine-reverse-fly",
+    sourceName: "MuscleWiki",
+    caption: "Machine reverse fly / reverse pec deck"
+  },
+  "forearm-cuff-curl": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Cables-cable-bilateral-high-cable-curl-front.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/cable-bilateral-high-cable-curl",
+    sourceName: "MuscleWiki",
+    caption: "Cable curl movement reference; use your forearm cuff instead of gripping"
+  }
+};
