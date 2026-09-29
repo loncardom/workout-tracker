@@ -1,0 +1,225 @@
+.posture-section {
+  margin-top: 26px;
+  padding: 0 16px 24px;
+}
+
+.posture-heading {
+  margin-bottom: 12px;
+}
+
+.posture-heading h2 {
+  margin: 0 0 5px;
+  font-size: 25px;
+}
+
+.posture-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.posture-list {
+  display: grid;
+  gap: 12px;
+}
+
+.posture-card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.posture-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 15px 16px 11px;
+}
+
+.posture-card-copy {
+  min-width: 0;
+}
+
+.posture-card h3 {
+  margin: 0 0 4px;
+  color: var(--accent);
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.posture-card-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.posture-frequency {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: #176cc7;
+  font-size: 11px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.posture-media {
+  margin: 0 12px;
+  overflow: hidden;
+  border: 1px solid #eceef1;
+  border-radius: 16px;
+  background: #f3f5f8;
+}
+
+.posture-media svg {
+  width: 100%;
+  height: auto;
+  min-height: 165px;
+  display: block;
+}
+
+.posture-prescription {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px 15px;
+}
+
+.posture-prescription strong {
+  font-size: 15px;
+}
+
+.posture-prescription span {
+  color: var(--muted);
+  font-size: 11px;
+  text-align: right;
+}
+
+.posture-carousel {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 12px 4px;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.posture-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.posture-slide {
+  flex: 0 0 calc(100% - 10px);
+  scroll-snap-align: center;
+  overflow: hidden;
+  border: 1px solid #eceef1;
+  border-radius: 16px;
+  background: #f3f5f8;
+}
+
+.posture-slide svg {
+  width: 100%;
+  height: auto;
+  min-height: 165px;
+  display: block;
+}
+
+.posture-slide-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px 11px;
+  border-top: 1px solid #e8eaee;
+  background: #fff;
+}
+
+.posture-slide-label strong {
+  font-size: 14px;
+}
+
+.posture-slide-label span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.posture-swipe-hint {
+  margin: 5px 16px 0;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: center;
+}
+
+.posture-figure .body,
+.posture-figure .limb,
+.posture-figure .wall,
+.posture-figure .floor,
+.posture-figure .band,
+.posture-figure .roller,
+.posture-figure .guide {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.posture-figure .body,
+.posture-figure .limb {
+  stroke: #56606b;
+  stroke-width: 8;
+}
+
+.posture-figure .head {
+  fill: #8c949f;
+}
+
+.posture-figure .wall,
+.posture-figure .floor,
+.posture-figure .guide {
+  stroke: #b7bdc6;
+  stroke-width: 5;
+}
+
+.posture-figure .band,
+.posture-figure .roller,
+.posture-figure .arrow {
+  stroke: var(--accent);
+}
+
+.posture-figure .band {
+  stroke-width: 5;
+}
+
+.posture-figure .roller {
+  fill: var(--accent-soft);
+  stroke-width: 4;
+}
+
+.posture-figure .arrow {
+  fill: none;
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.posture-figure text {
+  fill: #7b838e;
+  font: 700 12px Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (min-width: 600px) {
+  .posture-section {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .posture-slide {
+    flex-basis: 78%;
+  }
+}
