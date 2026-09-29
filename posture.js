@@ -35,16 +35,30 @@
       }
     },
     {
-      title: "Scapular Strength",
-      purpose: "Shoulder-blade control / rounded shoulders",
+      title: "Active Thoracic Correction / Axial Elongation",
+      purpose: "Active kyphosis correction / postural control",
+      frequency: "Daily",
+      prescription: "2 × 20–30 sec",
+      detail: "or 2 × 5 slow breaths",
+      instructions: "Stack ribs over pelvis, gently lengthen upward through the crown of the head, and actively reduce the upper/mid-back rounding without arching the lower back or aggressively pulling the shoulders back.",
+      media: {
+        imageUrl: "https://images.yogajournal.jp/article/38321/eF5s5akutXd4Ald9xi3s4N0RXej4CvpCBLMdTTW2.jpeg",
+        sourceUrl: "https://yogajournal.jp/4987/2",
+        sourceName: "Yoga Journal Japan",
+        alt: "Standing axial elongation demonstration"
+      }
+    },
+    {
+      title: "Face Pulls",
+      purpose: "Preferred scapular-strength exercise for posture / rounded shoulders",
       frequency: "3× / week",
       prescription: "2 × 10–15",
-      detail: "Choose either option",
-      instructions: "Use a light resistance and controlled motion. Pick either face pulls or external rotations; you do not need both in the same session.",
+      detail: "Face pull preferred",
+      instructions: "Use light-to-moderate resistance and a controlled pull toward the face. Keep the neck relaxed and avoid shrugging. Band external rotation is an optional shoulder-health alternative, not an equivalent posture/kyphosis exercise.",
       alternatives: [
         {
           title: "Band / Cable Face Pull",
-          subtitle: "Option 1",
+          subtitle: "Preferred",
           imageUrl: "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2020/05/face-pull.gif?resize=600%2C600&ssl=1",
           sourceUrl: "https://www.strengthlog.com/face-pull/",
           sourceName: "StrengthLog",
@@ -52,7 +66,7 @@
         },
         {
           title: "Band External Rotation",
-          subtitle: "Option 2",
+          subtitle: "Optional shoulder-health alternative",
           imageUrl: "https://sportydoctor.com/wp-content/uploads/2019/08/04-External-Band-Rotation.jpg",
           sourceUrl: "https://sportydoctor.com/exercises-for-shoulder-pain/",
           sourceName: "Sporty Doctor",
@@ -93,8 +107,8 @@
       purpose: "Thoracic extensor strength / rounded upper back",
       frequency: "~3× / week",
       prescription: "2 × 10–15",
-      detail: "Small, controlled chest lift",
-      instructions: "Lie face-down with your arms alongside you or in a shallow Y. Gently lift your upper chest off the floor while keeping your neck neutral. Try to extend primarily through the upper/mid back rather than cranking your lower back.",
+      detail: "Progress once 15 reps are easy",
+      instructions: "Lie face-down with your arms alongside you or in a shallow Y. Gently lift your upper chest off the floor while keeping your neck neutral. Try to extend primarily through the upper/mid back rather than cranking your lower back. Progression: once 15 controlled reps are easy, progressively increase difficulty using a longer lever position (arms in Y/overhead), a light plate held at the chest, or another loaded thoracic-extension variation. Do not leave this permanently as an easy bodyweight mobility drill.",
       media: {
         imageUrl: "https://images.easyme.com/20/170/web/springer50.jpg",
         sourceUrl: "https://dinryg.dk/scheuermann",
@@ -137,7 +151,7 @@
           </div>
         `).join("")}
       </div>
-      <div class="posture-swipe-hint">Swipe for alternative ↔</div>
+      <div class="posture-swipe-hint">Swipe for optional alternative ↔</div>
     `;
   }
 
@@ -146,7 +160,7 @@
       <section class="posture-page" id="posturePage">
         <section class="hero posture-page-hero">
           <h2>Posture</h2>
-          <p>Forward head · rounded shoulders · thoracic extension · rib/pelvis control. Prescriptions are fixed; there is nothing to log.</p>
+          <p>Forward head · rounded shoulders · thoracic extension · active kyphosis correction · rib/pelvis control. Prescriptions are fixed; there is nothing to log.</p>
         </section>
 
         <div class="posture-list">
