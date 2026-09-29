@@ -1,83 +1,24 @@
 (() => {
   const app = document.getElementById("app");
-  if (!app) return;
+  const pageTitle = document.getElementById("pageTitle");
+  const backButton = document.getElementById("backButton");
+  const menuButton = document.getElementById("menuButton");
+  if (!app || !pageTitle || !backButton || !menuButton) return;
 
-  const figure = {
-    chinTuck: `
-      <svg class="posture-figure" viewBox="0 0 320 180" role="img" aria-label="Side-view chin tuck illustration">
-        <line class="guide" x1="210" y1="32" x2="210" y2="150" stroke-dasharray="7 9" />
-        <circle class="head" cx="190" cy="62" r="27" />
-        <path class="body" d="M177 91 C173 111 171 128 169 153" />
-        <path class="limb" d="M170 112 C142 119 129 136 117 154" />
-        <path class="arrow" d="M238 62 H214 M221 54 L213 62 L221 70" />
-        <text x="226" y="88">head straight back</text>
-      </svg>`,
-    wallSlide: `
-      <svg class="posture-figure" viewBox="0 0 320 180" role="img" aria-label="Wall slide with reach illustration">
-        <line class="wall" x1="78" y1="22" x2="78" y2="158" />
-        <circle class="head" cx="145" cy="53" r="22" />
-        <path class="body" d="M145 78 L145 139" />
-        <path class="limb" d="M145 88 L112 59 L96 34" />
-        <path class="limb" d="M145 88 L178 59 L194 34" />
-        <path class="limb" d="M145 138 L124 160 M145 138 L166 160" />
-        <path class="arrow" d="M104 74 L98 46 M92 54 L98 45 L105 52" />
-        <path class="arrow" d="M186 74 L192 46 M185 52 L192 45 L198 54" />
-        <text x="209" y="88">slide + reach up</text>
-      </svg>`,
-    facePull: `
-      <svg class="posture-figure" viewBox="0 0 320 180" role="img" aria-label="Band face pull illustration">
-        <circle class="head" cx="215" cy="55" r="22" />
-        <path class="body" d="M215 79 L215 145" />
-        <path class="limb" d="M213 91 L177 84 L150 65" />
-        <path class="limb" d="M217 91 L250 84 L270 66" />
-        <path class="band" d="M48 65 L150 65 M48 65 L270 66" />
-        <circle cx="47" cy="65" r="8" fill="#348df5" />
-        <path class="arrow" d="M157 45 L188 57 M179 48 L189 57 L177 62" />
-        <text x="93" y="151">pull toward face, elbows high</text>
-      </svg>`,
-    externalRotation: `
-      <svg class="posture-figure" viewBox="0 0 320 180" role="img" aria-label="Band external rotation illustration">
-        <circle class="head" cx="160" cy="46" r="22" />
-        <path class="body" d="M160 70 L160 145" />
-        <path class="limb" d="M160 88 L131 100 L131 133" />
-        <path class="limb" d="M160 88 L189 100 L214 124" />
-        <path class="band" d="M98 132 L131 132" />
-        <path class="arrow" d="M191 126 C206 112 224 108 241 112 M232 104 L242 112 L232 119" />
-        <text x="69" y="158">elbow stays near side; rotate outward</text>
-      </svg>`,
-    deadBug: `
-      <svg class="posture-figure" viewBox="0 0 320 180" role="img" aria-label="Dead bug exercise illustration">
-        <line class="floor" x1="38" y1="145" x2="286" y2="145" />
-        <circle class="head" cx="93" cy="124" r="19" />
-        <path class="body" d="M112 126 C145 123 169 126 193 135" />
-        <path class="limb" d="M133 124 L119 79 L107 47" />
-        <path class="limb" d="M147 124 L172 86 L184 52" />
-        <path class="limb" d="M190 135 L214 99 L232 70" />
-        <path class="limb" d="M192 135 L238 141 L276 141" />
-        <path class="arrow" d="M235 86 L258 111 M256 99 L259 112 L246 109" />
-        <text x="111" y="165">keep ribs down and low back controlled</text>
-      </svg>`,
-    thoracicExtension: `
-      <svg class="posture-figure" viewBox="0 0 320 180" role="img" aria-label="Thoracic extension over foam roller illustration">
-        <line class="floor" x1="34" y1="151" x2="286" y2="151" />
-        <rect class="roller" x="145" y="126" width="58" height="25" rx="12" />
-        <circle class="head" cx="100" cy="87" r="20" />
-        <path class="body" d="M119 98 C146 102 161 112 176 132" />
-        <path class="limb" d="M115 98 L88 69 L66 68" />
-        <path class="limb" d="M176 132 L222 140 L263 140" />
-        <path class="arrow" d="M131 73 C151 57 176 56 197 67 M187 58 L198 67 L188 75" />
-        <text x="129" y="39">extend upper back, not low back</text>
-      </svg>`
-  };
-
-  const items = [
+  const exercises = [
     {
       title: "Chin Tucks",
       purpose: "Forward-head control / deep neck flexors",
       frequency: "Daily",
       prescription: "2 × 8–12",
       detail: "3–5 sec holds",
-      media: figure.chinTuck
+      instructions: "Glide the head straight backward without looking down. Keep the movement small and your gaze level.",
+      media: {
+        imageUrl: "https://b2284556.smushcdn.com/2284556/wp-content/uploads/2024/11/chin-tuck-exercise-for-neck-pain-illustration_02.jpg?lossy=2&strip=1&webp=1",
+        sourceUrl: "https://dralexjimenez.com/cervical-retraction-an-effective-exercise-for-neck-pain-relief/amp/",
+        sourceName: "Dr. Alex Jimenez",
+        alt: "Chin tuck exercise demonstration"
+      }
     },
     {
       title: "Wall Slides with Reach",
@@ -85,17 +26,38 @@
       frequency: "Daily",
       prescription: "2 × 8–12",
       detail: "Slow, controlled reps",
-      media: figure.wallSlide
+      instructions: "Keep light pressure into the wall as the arms slide upward. Reach at the top without shrugging or flaring the ribs.",
+      media: {
+        imageUrl: "https://physiohunt.com/subject/etc/serratus-anterior/Serratus-wall-slide.jpg",
+        sourceUrl: "https://physiohunt.com/subject/muscles/serratus-anterior.php",
+        sourceName: "PhysioHunt",
+        alt: "Serratus anterior wall slide demonstration"
+      }
     },
     {
       title: "Scapular Strength",
-      purpose: "Choose either option; both target shoulder/scapular control",
+      purpose: "Shoulder-blade control / rounded shoulders",
       frequency: "3× / week",
       prescription: "2 × 10–15",
-      detail: "Choose one option",
+      detail: "Choose either option",
+      instructions: "Use a light resistance and controlled motion. Pick either face pulls or external rotations; you do not need both in the same session.",
       alternatives: [
-        { title: "Band Face Pull", subtitle: "Option 1", media: figure.facePull },
-        { title: "Band External Rotation", subtitle: "Option 2", media: figure.externalRotation }
+        {
+          title: "Band / Cable Face Pull",
+          subtitle: "Option 1",
+          imageUrl: "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2020/05/face-pull.gif?resize=600%2C600&ssl=1",
+          sourceUrl: "https://www.strengthlog.com/face-pull/",
+          sourceName: "StrengthLog",
+          alt: "Face pull exercise GIF"
+        },
+        {
+          title: "Band External Rotation",
+          subtitle: "Option 2",
+          imageUrl: "https://sportydoctor.com/wp-content/uploads/2019/08/04-External-Band-Rotation.jpg",
+          sourceUrl: "https://sportydoctor.com/exercises-for-shoulder-pain/",
+          sourceName: "Sporty Doctor",
+          alt: "Band external rotation demonstration"
+        }
       ]
     },
     {
@@ -103,29 +65,71 @@
       purpose: "Rib/pelvis control and trunk strength",
       frequency: "3× / week",
       prescription: "2 × 6–10 / side",
-      detail: "Slight posterior pelvic tilt",
-      media: figure.deadBug
+      detail: "Controlled alternating reps",
+      instructions: "Keep the ribs down and your lower back gently controlled against the floor as the opposite arm and leg extend.",
+      media: {
+        imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Bodyweight-dead-bug-side.jpg&w=3840",
+        sourceUrl: "https://musclewiki.com/exercise/dead-bug",
+        sourceName: "MuscleWiki",
+        alt: "Dead bug exercise demonstration"
+      }
     },
     {
-      title: "Thoracic Extensions",
-      purpose: "Upper-back mobility",
+      title: "Thoracic Extensions over Foam Roller",
+      purpose: "Upper/mid-back mobility",
       frequency: "Daily",
       prescription: "1 × 5–8",
-      detail: "Slow reps over foam roller",
-      media: figure.thoracicExtension
+      detail: "Slow reps at 2–3 spots",
+      instructions: "Support the head and gently extend over the roller through the upper/mid back. Avoid turning it into a large lower-back arch.",
+      media: {
+        imageUrl: "https://images.squarespace-cdn.com/content/v1/5ec6e09418898f77ed76fbac/b66b281e-777f-421b-abae-f600977b57db/SMFR%2BMid%2BBack%2BExtension%2BMob.gif",
+        sourceUrl: "https://www.kinesicsmove.com/mobilitycms/smfr-mid-back-extension-mob",
+        sourceName: "KinesicsMOVE",
+        alt: "Thoracic extension over a foam roller GIF"
+      }
+    },
+    {
+      title: "Prone Thoracic Extensions",
+      purpose: "Thoracic extensor strength / rounded upper back",
+      frequency: "~3× / week",
+      prescription: "2 × 10–15",
+      detail: "Small, controlled chest lift",
+      instructions: "Lie face-down with your arms alongside you or in a shallow Y. Gently lift your upper chest off the floor while keeping your neck neutral. Try to extend primarily through the upper/mid back rather than cranking your lower back.",
+      media: {
+        imageUrl: "https://images.easyme.com/20/170/web/springer50.jpg",
+        sourceUrl: "https://dinryg.dk/scheuermann",
+        sourceName: "Din Ryg",
+        alt: "Prone thoracic extension with arms alongside the body"
+      }
     }
   ];
 
-  function renderMedia(item) {
-    if (!item.alternatives) {
-      return `<div class="posture-media">${item.media}</div>`;
+  let postureOpen = false;
+  let homeNodes = [];
+  let previousBackHandler = null;
+  let previousTitle = "Workout Tracker";
+  let previousScrollY = 0;
+
+  function mediaFrame(media) {
+    return `
+      <div class="posture-media-frame">
+        <img class="posture-photo" src="${media.imageUrl}" alt="${media.alt}" loading="lazy" referrerpolicy="no-referrer">
+        <div class="posture-media-fallback">Image unavailable</div>
+      </div>
+      <a class="posture-source" href="${media.sourceUrl}" target="_blank" rel="noopener noreferrer">Demo source: ${media.sourceName} ↗</a>
+    `;
+  }
+
+  function exerciseMedia(exercise) {
+    if (!exercise.alternatives) {
+      return `<div class="posture-media">${mediaFrame(exercise.media)}</div>`;
     }
 
     return `
       <div class="posture-carousel" aria-label="Exercise alternatives">
-        ${item.alternatives.map(option => `
+        ${exercise.alternatives.map(option => `
           <div class="posture-slide">
-            ${option.media}
+            ${mediaFrame(option)}
             <div class="posture-slide-label">
               <strong>${option.title}</strong>
               <span>${option.subtitle}</span>
@@ -137,28 +141,30 @@
     `;
   }
 
-  function postureMarkup() {
+  function posturePageMarkup() {
     return `
-      <section class="posture-section" aria-labelledby="postureTitle">
-        <div class="posture-heading">
-          <h2 id="postureTitle">Posture</h2>
-          <p>Forward head · rounded shoulders · rib/pelvis control. Fixed routine — no set logging.</p>
-        </div>
+      <section class="posture-page" id="posturePage">
+        <section class="hero posture-page-hero">
+          <h2>Posture</h2>
+          <p>Forward head · rounded shoulders · thoracic extension · rib/pelvis control. Prescriptions are fixed; there is nothing to log.</p>
+        </section>
+
         <div class="posture-list">
-          ${items.map(item => `
+          ${exercises.map(exercise => `
             <article class="posture-card">
               <div class="posture-card-top">
                 <div class="posture-card-copy">
-                  <h3>${item.title}</h3>
-                  <p>${item.purpose}</p>
+                  <h3>${exercise.title}</h3>
+                  <p>${exercise.purpose}</p>
                 </div>
-                <span class="posture-frequency">${item.frequency}</span>
+                <span class="posture-frequency">${exercise.frequency}</span>
               </div>
-              ${renderMedia(item)}
+              ${exerciseMedia(exercise)}
               <div class="posture-prescription">
-                <strong>${item.prescription}</strong>
-                <span>${item.detail}</span>
+                <strong>${exercise.prescription}</strong>
+                <span>${exercise.detail}</span>
               </div>
+              <p class="posture-instructions">${exercise.instructions}</p>
             </article>
           `).join("")}
         </div>
@@ -166,20 +172,76 @@
     `;
   }
 
-  function mount() {
-    const isHome = app.querySelector(".home-hero") && app.querySelector(".routine-list");
-    const existing = app.querySelector(".posture-section");
+  function attachImageFallbacks(root) {
+    root.querySelectorAll(".posture-photo").forEach(img => {
+      img.addEventListener("error", () => {
+        img.classList.add("failed");
+        img.closest(".posture-media-frame")?.classList.add("failed");
+      });
+    });
+  }
 
-    if (!isHome) {
-      existing?.remove();
+  function closePosture() {
+    if (!postureOpen) return;
+    postureOpen = false;
+    document.getElementById("posturePage")?.remove();
+    homeNodes.forEach(node => node.classList.remove("posture-home-hidden"));
+    pageTitle.textContent = previousTitle;
+    backButton.onclick = previousBackHandler;
+    backButton.classList.add("hidden");
+    menuButton.classList.remove("finish-button");
+    menuButton.textContent = "⚙";
+    window.scrollTo(0, previousScrollY);
+  }
+
+  function openPosture() {
+    if (postureOpen) return;
+    postureOpen = true;
+    previousScrollY = window.scrollY;
+    previousTitle = pageTitle.textContent;
+    previousBackHandler = backButton.onclick;
+    homeNodes = Array.from(app.children);
+    homeNodes.forEach(node => node.classList.add("posture-home-hidden"));
+
+    app.insertAdjacentHTML("beforeend", posturePageMarkup());
+    const page = document.getElementById("posturePage");
+    attachImageFallbacks(page);
+
+    pageTitle.textContent = "Posture";
+    backButton.classList.remove("hidden");
+    backButton.onclick = closePosture;
+    menuButton.classList.remove("finish-button");
+    menuButton.textContent = "⚙";
+    window.scrollTo(0, 0);
+  }
+
+  function mountHomeEntry() {
+    const routineList = app.querySelector(".routine-list");
+    const homeHero = app.querySelector(".home-hero");
+
+    if (!routineList || !homeHero) {
+      postureOpen = false;
       return;
     }
 
-    if (existing) return;
-    app.insertAdjacentHTML("beforeend", postureMarkup());
+    if (routineList.querySelector("[data-posture-routine]")) return;
+
+    routineList.insertAdjacentHTML("beforeend", `
+      <button class="routine-row posture-routine-row" data-posture-routine>
+        <span class="routine-index">6</span>
+        <span class="routine-main">
+          <strong>Posture</strong>
+          <span>${exercises.length} exercises · fixed routine · posture & mobility</span>
+          <small>Daily + ~3×/week movements</small>
+        </span>
+        <span class="chevron">›</span>
+      </button>
+    `);
+
+    routineList.querySelector("[data-posture-routine]").onclick = openPosture;
   }
 
-  const observer = new MutationObserver(mount);
+  const observer = new MutationObserver(mountHomeEntry);
   observer.observe(app, { childList: true, subtree: false });
-  mount();
+  mountHomeEntry();
 })();
