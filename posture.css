@@ -1,34 +1,31 @@
-.posture-section {
-  margin-top: 26px;
-  padding: 0 16px 24px;
+.posture-home-hidden {
+  display: none !important;
 }
 
-.posture-heading {
-  margin-bottom: 12px;
+.posture-page {
+  padding-bottom: 28px;
 }
 
-.posture-heading h2 {
-  margin: 0 0 5px;
-  font-size: 25px;
+.posture-page-hero {
+  padding-bottom: 14px;
 }
 
-.posture-heading p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.45;
+.posture-page-hero h2 {
+  margin-bottom: 7px;
 }
 
 .posture-list {
   display: grid;
   gap: 12px;
+  padding-top: 2px;
 }
 
 .posture-card {
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   background: var(--surface);
+  padding-bottom: 14px;
 }
 
 .posture-card-top {
@@ -36,7 +33,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: 15px 16px 11px;
+  padding: 17px 16px 12px;
 }
 
 .posture-card-copy {
@@ -70,17 +67,55 @@
 
 .posture-media {
   margin: 0 12px;
+}
+
+.posture-media-frame {
+  position: relative;
   overflow: hidden;
+  min-height: 190px;
+  display: grid;
+  place-items: center;
   border: 1px solid #eceef1;
   border-radius: 16px;
   background: #f3f5f8;
 }
 
-.posture-media svg {
+.posture-photo {
   width: 100%;
-  height: auto;
-  min-height: 165px;
+  height: min(62vw, 390px);
+  min-height: 190px;
+  max-height: 390px;
   display: block;
+  object-fit: contain;
+  object-position: center;
+  background: #f3f5f8;
+}
+
+.posture-photo.failed {
+  display: none;
+}
+
+.posture-media-fallback {
+  display: none;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.posture-media-frame.failed .posture-media-fallback {
+  display: block;
+}
+
+.posture-source {
+  display: block;
+  margin: 7px 2px 0;
+  color: var(--muted);
+  font-size: 11px;
+  text-align: right;
+  text-decoration: none;
+}
+
+.posture-source:active {
+  color: var(--accent);
 }
 
 .posture-prescription {
@@ -88,17 +123,28 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 13px 16px 15px;
+  margin: 12px 16px 0;
+  padding: 12px 13px;
+  border-radius: 13px;
+  background: var(--accent-soft);
+  color: #176cc7;
 }
 
 .posture-prescription strong {
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .posture-prescription span {
-  color: var(--muted);
   font-size: 11px;
+  font-weight: 700;
   text-align: right;
+}
+
+.posture-instructions {
+  margin: 11px 16px 0;
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .posture-carousel {
@@ -116,19 +162,21 @@
 }
 
 .posture-slide {
-  flex: 0 0 calc(100% - 10px);
+  flex: 0 0 calc(100% - 18px);
   scroll-snap-align: center;
   overflow: hidden;
   border: 1px solid #eceef1;
   border-radius: 16px;
-  background: #f3f5f8;
+  background: #fff;
 }
 
-.posture-slide svg {
-  width: 100%;
-  height: auto;
-  min-height: 165px;
-  display: block;
+.posture-slide .posture-media-frame {
+  border: 0;
+  border-radius: 0;
+}
+
+.posture-slide .posture-source {
+  margin: 7px 10px 0;
 }
 
 .posture-slide-label {
@@ -136,9 +184,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-top: 8px;
   padding: 10px 12px 11px;
   border-top: 1px solid #e8eaee;
-  background: #fff;
 }
 
 .posture-slide-label strong {
@@ -157,69 +205,22 @@
   text-align: center;
 }
 
-.posture-figure .body,
-.posture-figure .limb,
-.posture-figure .wall,
-.posture-figure .floor,
-.posture-figure .band,
-.posture-figure .roller,
-.posture-figure .guide {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.posture-figure .body,
-.posture-figure .limb {
-  stroke: #56606b;
-  stroke-width: 8;
-}
-
-.posture-figure .head {
-  fill: #8c949f;
-}
-
-.posture-figure .wall,
-.posture-figure .floor,
-.posture-figure .guide {
-  stroke: #b7bdc6;
-  stroke-width: 5;
-}
-
-.posture-figure .band,
-.posture-figure .roller,
-.posture-figure .arrow {
-  stroke: var(--accent);
-}
-
-.posture-figure .band {
-  stroke-width: 5;
-}
-
-.posture-figure .roller {
-  fill: var(--accent-soft);
-  stroke-width: 4;
-}
-
-.posture-figure .arrow {
-  fill: none;
-  stroke-width: 5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.posture-figure text {
-  fill: #7b838e;
-  font: 700 12px Inter, ui-sans-serif, system-ui, sans-serif;
-}
-
 @media (min-width: 600px) {
-  .posture-section {
-    padding-left: 28px;
-    padding-right: 28px;
+  .posture-list {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .posture-card {
+    border: 1px solid var(--line);
+    border-radius: 20px;
   }
 
   .posture-slide {
     flex-basis: 78%;
+  }
+
+  .posture-photo {
+    height: 360px;
   }
 }
