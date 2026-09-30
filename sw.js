@@ -1,9 +1,10 @@
-const CACHE = "workout-tracker-v9";
+const CACHE = "workout-tracker-v10";
 const ASSETS = [
   "./",
   "./index.html",
   "./styles.css",
   "./posture.css",
+  "./alternatives.css",
   "./data.js",
   "./routine-overrides.js",
   "./app.js",
