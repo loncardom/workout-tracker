@@ -59,9 +59,9 @@
         {
           title: "Band / Cable Face Pull",
           subtitle: "Preferred",
-          imageUrl: "https://i0.wp.com/www.strengthlog.com/wp-content/uploads/2020/05/face-pull.gif?resize=600%2C600&ssl=1",
-          sourceUrl: "https://www.strengthlog.com/face-pull/",
-          sourceName: "StrengthLog",
+          imageUrl: "./assets/exercises/face-pull.gif",
+          sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull.json",
+          sourceName: "Free Exercise DB",
           alt: "Face pull exercise GIF"
         },
         {
@@ -96,9 +96,9 @@
       detail: "Slow reps at 2–3 spots",
       instructions: "Support the head and gently extend over the roller through the upper/mid back. Avoid turning it into a large lower-back arch.",
       media: {
-        imageUrl: "https://images.squarespace-cdn.com/content/v1/5ec6e09418898f77ed76fbac/b66b281e-777f-421b-abae-f600977b57db/SMFR%2BMid%2BBack%2BExtension%2BMob.gif",
-        sourceUrl: "https://www.kinesicsmove.com/mobilitycms/smfr-mid-back-extension-mob",
-        sourceName: "KinesicsMOVE",
+        imageUrl: "./assets/exercises/thoracic-extension.gif",
+        sourceUrl: "https://github.com/chronicweirdo/chronicweirdo/blob/gh-pages/calisthenics/thoracic_extension.gif.webp",
+        sourceName: "chronicweirdo exercise reference",
         alt: "Thoracic extension over a foam roller GIF"
       }
     },
