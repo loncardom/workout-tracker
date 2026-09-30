@@ -50,6 +50,13 @@
   }
 
   window.EXERCISE_MEDIA ||= {};
+  window.EXERCISE_MEDIA["hack-squat"] = {
+    imageUrl: "./assets/exercises/hack-squat.gif",
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Hack_Squat.json",
+    sourceName: "Free Exercise DB",
+    caption: "Hack squat machine"
+  };
+
   window.EXERCISE_MEDIA[legPressId] = {
     imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-leg-press-side.jpg&w=3840",
     sourceUrl: "https://musclewiki.com/exercise/machine-leg-press",
