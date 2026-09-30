@@ -34,7 +34,8 @@
   }
 
   function findDefinition(exerciseId) {
-    for (const routine of window.WORKOUTS) {
+    if (window.EXERCISE_VARIANTS?.[exerciseId]) return window.EXERCISE_VARIANTS[exerciseId];
+    for (const routine of window.WORKOUTS || []) {
       const found = routine.exercises.find(ex => ex.id === exerciseId);
       if (found) return found;
     }
@@ -49,38 +50,94 @@
     };
   }
 
-  function hydrateActive(session) {
-    if (!session?.exercises) return session;
+  function lastRoutineSession(routineId) {
+    return getHistory().find(item => item.routineId === routineId);
+  }
 
-    session.exercises = session.exercises.map(ex => {
-      const def = findDefinition(ex.exerciseId) || {};
-      const existing = Array.isArray(ex.sets) ? ex.sets : [];
-      const plannedSets = ex.targetSets || def.targetSets || 3;
-      const sets = existing.length
-        ? existing.map(s => ({
-            weight: s.weight ?? "",
-            reps: s.reps ?? "",
-            completed: s.completed ?? true
-          }))
-        : Array.from({ length: plannedSets }, () => emptySet());
+  function lastExercisePerformance(exerciseId) {
+    for (const session of getHistory()) {
+      const found = session.exercises?.find(ex => ex.exerciseId === exerciseId && ex.sets?.length);
+      if (found) return found;
+    }
+    return null;
+  }
 
-      return {
-        exerciseId: ex.exerciseId,
-        name: ex.name || def.name || "Exercise",
-        unit: ex.unit || def.unit || "lb",
-        equipment: ex.equipment || def.equipment || "",
-        targetSets: ex.targetSets || def.targetSets || plannedSets,
-        reps: ex.reps || def.reps || "",
-        graphic: ex.graphic || def.graphic || "generic",
-        note: ex.note || def.note || "",
-        optional: ex.optional ?? def.optional ?? false,
-        primary: ex.primary || def.primary || [ex.target].filter(Boolean),
-        secondary: ex.secondary || def.secondary || [],
-        sets
-      };
+  function previousSet(exerciseId, setIndex) {
+    return lastExercisePerformance(exerciseId)?.sets?.[setIndex] || null;
+  }
+
+  function activeExerciseFromDefinition(def, source = null) {
+    const previous = lastExercisePerformance(def.id);
+    const existing = Array.isArray(source?.sets) ? source.sets : [];
+    const plannedSets = source?.targetSets || def.targetSets || 3;
+    const sets = existing.length
+      ? existing.map(set => ({
+          weight: set.weight ?? "",
+          reps: set.reps ?? "",
+          completed: set.completed ?? true
+        }))
+      : Array.from({ length: plannedSets }, (_, i) => emptySet(previous?.sets?.[i]));
+
+    return {
+      exerciseId: source?.exerciseId || def.id,
+      name: source?.name || def.name || "Exercise",
+      unit: source?.unit || def.unit || "lb",
+      equipment: source?.equipment || def.equipment || "",
+      targetSets: source?.targetSets || def.targetSets || plannedSets,
+      reps: source?.reps || def.reps || "",
+      graphic: source?.graphic || def.graphic || "generic",
+      note: source?.note || def.note || "",
+      optional: source?.optional ?? def.optional ?? false,
+      primary: source?.primary || def.primary || [source?.target].filter(Boolean),
+      secondary: source?.secondary || def.secondary || [],
+      sets
+    };
+  }
+
+  function buildExerciseSlot(def, source = null) {
+    const alternativeIds = Array.isArray(def.alternativeIds) ? def.alternativeIds : [];
+    if (!alternativeIds.length && !source?.variants) {
+      return activeExerciseFromDefinition(def, source);
+    }
+
+    const sourceVariants = Array.isArray(source?.variants) ? source.variants : [];
+    const ids = [def.id, ...alternativeIds];
+    const variants = ids.map((id, index) => {
+      const variantDef = findDefinition(id) || (index === 0 ? def : null) || {};
+      const saved = sourceVariants.find(item => item.exerciseId === id) || (index === 0 && !source?.variants ? source : null);
+      return activeExerciseFromDefinition(variantDef, saved);
     });
 
+    const requested = Number(source?.selectedVariant);
+    const selectedVariant = Number.isInteger(requested) && requested >= 0 && requested < variants.length ? requested : 0;
+
+    return {
+      exerciseId: def.id,
+      selectedVariant,
+      variants
+    };
+  }
+
+  function hydrateActive(session) {
+    if (!session?.exercises) return session;
+    session.exercises = session.exercises.map(slot => {
+      const def = findDefinition(slot.exerciseId) || {};
+      return buildExerciseSlot(def, slot);
+    });
     return session;
+  }
+
+  function selectedExercise(slot) {
+    if (!slot?.variants?.length) return slot;
+    const index = Math.min(Math.max(Number(slot.selectedVariant) || 0, 0), slot.variants.length - 1);
+    return slot.variants[index];
+  }
+
+  function exerciseAt(slotIndex, variantIndex = -1) {
+    const slot = active?.exercises?.[slotIndex];
+    if (!slot) return null;
+    if (variantIndex >= 0 && slot.variants?.[variantIndex]) return slot.variants[variantIndex];
+    return selectedExercise(slot);
   }
 
   function flash(message) {
@@ -114,23 +171,6 @@
     const minutes = Math.floor(seconds / 60);
     const rest = seconds % 60;
     return minutes ? minutes + ":" + String(rest).padStart(2, "0") : rest + "s";
-  }
-
-  function lastRoutineSession(routineId) {
-    return getHistory().find(item => item.routineId === routineId);
-  }
-
-  function lastExercisePerformance(exerciseId) {
-    for (const session of getHistory()) {
-      const found = session.exercises?.find(ex => ex.exerciseId === exerciseId && ex.sets?.length);
-      if (found) return found;
-    }
-    return null;
-  }
-
-  function previousSet(exerciseId, setIndex) {
-    const previous = lastExercisePerformance(exerciseId);
-    return previous?.sets?.[setIndex] || null;
   }
 
   function exerciseMedia(exerciseId) {
@@ -231,25 +271,7 @@
       routineId: routine.id,
       routineName: routine.name,
       startedAt: null,
-      exercises: routine.exercises.map(ex => {
-        const previous = lastExercisePerformance(ex.id);
-        const rowCount = ex.targetSets || 3;
-
-        return {
-          exerciseId: ex.id,
-          name: ex.name,
-          unit: ex.unit,
-          equipment: ex.equipment,
-          targetSets: ex.targetSets,
-          reps: ex.reps,
-          graphic: ex.graphic,
-          note: ex.note || "",
-          optional: Boolean(ex.optional),
-          primary: ex.primary,
-          secondary: ex.secondary,
-          sets: Array.from({ length: rowCount }, (_, i) => emptySet(previous?.sets?.[i]))
-        };
-      })
+      exercises: routine.exercises.map(def => buildExerciseSlot(def))
     };
 
     renderWorkout();
@@ -257,7 +279,6 @@
 
   function ensureWorkoutStarted() {
     if (!active || active.startedAt) return;
-
     active.startedAt = new Date().toISOString();
     save(ACTIVE_KEY, active);
     flash("Workout started");
@@ -272,8 +293,9 @@
     let setCount = 0;
     let volume = 0;
 
-    for (const ex of active.exercises) {
-      for (const set of ex.sets) {
+    for (const slot of active?.exercises || []) {
+      const ex = selectedExercise(slot);
+      for (const set of ex?.sets || []) {
         if (!set.completed) continue;
         const weight = Number(set.weight);
         const reps = Number(set.reps);
@@ -285,6 +307,54 @@
     }
 
     return { setCount, volume };
+  }
+
+  function updateTotalsDisplay() {
+    const totals = workoutTotals();
+    const volume = document.getElementById("volumeStat");
+    const sets = document.getElementById("setsStat");
+    if (volume) volume.textContent = Math.round(totals.volume).toLocaleString() + " lb";
+    if (sets) sets.textContent = totals.setCount;
+  }
+
+  function setVariant(slotIndex, variantIndex, carousel = null) {
+    const slot = active?.exercises?.[slotIndex];
+    if (!slot?.variants?.[variantIndex] || slot.selectedVariant === variantIndex) return;
+    slot.selectedVariant = variantIndex;
+    if (active.startedAt) save(ACTIVE_KEY, active);
+    updateTotalsDisplay();
+
+    const root = carousel || document.querySelector(`[data-variant-carousel="${slotIndex}"]`);
+    if (root) {
+      root.querySelectorAll(".exercise-variant-slide").forEach((slide, index) => {
+        slide.classList.toggle("selected", index === variantIndex);
+        const badge = slide.querySelector(".variant-status");
+        if (badge) badge.textContent = index === variantIndex ? "Selected" : "Alternative";
+      });
+      const dots = root.parentElement?.querySelectorAll(".variant-dot");
+      dots?.forEach((dot, index) => dot.classList.toggle("active", index === variantIndex));
+    }
+  }
+
+  function bindVariantCarousels() {
+    document.querySelectorAll("[data-variant-carousel]").forEach(carousel => {
+      const slotIndex = Number(carousel.dataset.variantCarousel);
+      const slot = active.exercises[slotIndex];
+      const selected = Number(slot.selectedVariant) || 0;
+      requestAnimationFrame(() => {
+        carousel.scrollLeft = selected * carousel.clientWidth;
+      });
+
+      let timer = null;
+      carousel.addEventListener("scroll", () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          const width = carousel.clientWidth || 1;
+          const index = Math.max(0, Math.min(slot.variants.length - 1, Math.round(carousel.scrollLeft / width)));
+          setVariant(slotIndex, index, carousel);
+        }, 120);
+      }, { passive: true });
+    });
   }
 
   function renderWorkout() {
@@ -318,7 +388,7 @@
       </section>
 
       <div class="exercise-list">
-        ${active.exercises.map((ex, exerciseIndex) => exerciseCard(ex, exerciseIndex)).join("")}
+        ${active.exercises.map((slot, slotIndex) => exerciseCard(slot, slotIndex)).join("")}
       </div>
     `;
 
@@ -328,13 +398,18 @@
     }, 1000);
 
     document.querySelectorAll("[data-exercise-detail]").forEach(btn => {
-      btn.onclick = () => openExerciseDetail(Number(btn.dataset.exerciseDetail));
+      btn.onclick = () => {
+        const [slotIndex, variantIndex] = btn.dataset.exerciseDetail.split(":").map(Number);
+        openExerciseDetail(slotIndex, variantIndex);
+      };
     });
 
     document.querySelectorAll("[data-set-input]").forEach(input => {
       input.addEventListener("input", () => {
-        const [exerciseIndex, setIndex, field] = input.dataset.setInput.split(":");
-        const set = active.exercises[Number(exerciseIndex)].sets[Number(setIndex)];
+        const [slotIndex, variantIndex, setIndex, field] = input.dataset.setInput.split(":");
+        const ex = exerciseAt(Number(slotIndex), Number(variantIndex));
+        const set = ex?.sets?.[Number(setIndex)];
+        if (!set) return;
 
         ensureWorkoutStarted();
         set[field] = input.value;
@@ -344,8 +419,10 @@
 
     document.querySelectorAll("[data-complete-set]").forEach(btn => {
       btn.onclick = () => {
-        const [exerciseIndex, setIndex] = btn.dataset.completeSet.split(":").map(Number);
-        const set = active.exercises[exerciseIndex].sets[setIndex];
+        const [slotIndex, variantIndex, setIndex] = btn.dataset.completeSet.split(":").map(Number);
+        const ex = exerciseAt(slotIndex, variantIndex);
+        const set = ex?.sets?.[setIndex];
+        if (!set) return;
 
         if (!set.completed) {
           const weight = Number(set.weight);
@@ -356,6 +433,7 @@
           }
         }
 
+        ensureWorkoutStarted();
         set.completed = !set.completed;
         save(ACTIVE_KEY, active);
         renderWorkout();
@@ -364,76 +442,108 @@
 
     document.querySelectorAll("[data-add-set]").forEach(btn => {
       btn.onclick = () => {
-        const exerciseIndex = Number(btn.dataset.addSet);
-        const ex = active.exercises[exerciseIndex];
+        const [slotIndex, variantIndex] = btn.dataset.addSet.split(":").map(Number);
+        const ex = exerciseAt(slotIndex, variantIndex);
+        if (!ex) return;
         const last = ex.sets.at(-1) || {};
         ex.sets.push(emptySet({ weight: last.weight, reps: last.reps }));
         if (active.startedAt) save(ACTIVE_KEY, active);
         renderWorkout();
       };
     });
+
+    bindVariantCarousels();
   }
 
-  function exerciseCard(ex, exerciseIndex) {
+  function exerciseCard(slot, slotIndex) {
+    if (!slot.variants?.length) {
+      return `<article class="exercise-card">${exerciseCardBody(slot, slotIndex, -1)}</article>`;
+    }
+
+    const selected = Number(slot.selectedVariant) || 0;
     return `
-      <article class="exercise-card">
-        <button class="exercise-heading" data-exercise-detail="${exerciseIndex}">
-          <span class="exercise-thumb" aria-hidden="true">${exerciseImage(ex, true)}</span>
-          <span class="exercise-heading-copy">
-            <strong>${esc(ex.name)}${ex.optional ? ' <span class="optional-tag">Optional</span>' : ""}</strong>
-            <small>${esc(ex.targetSets || ex.sets.length)} × ${esc(ex.reps || "reps")} · ${esc((ex.primary || []).join(" · "))}</small>
-          </span>
-          <span class="info-dot">i</span>
-        </button>
-
-        <div class="set-table">
-          <div class="set-table-head">
-            <span>SET</span>
-            <span>PREVIOUS</span>
-            <span>${esc(ex.unit.toUpperCase())}</span>
-            <span>REPS</span>
-            <span>✓</span>
+      <article class="exercise-card alternative-exercise-card">
+        <div class="variant-header">
+          <div>
+            <span class="mini-label">CHOOSE ONE</span>
+            <strong>Hack Squat / Leg Press</strong>
           </div>
-
-          ${ex.sets.map((set, setIndex) => {
-            const previous = previousSet(ex.exerciseId, setIndex);
-            const previousText = previous
-              ? previous.weight + " × " + previous.reps
-              : "—";
-
-            return `
-              <div class="set-entry ${set.completed ? "complete" : ""}">
-                <span class="set-badge">${setIndex + 1}</span>
-                <span class="previous-value">${esc(previousText)}</span>
-                <input
-                  aria-label="Weight for set ${setIndex + 1}"
-                  inputmode="decimal"
-                  type="number"
-                  min="0"
-                  step="0.5"
-                  value="${esc(set.weight)}"
-                  data-set-input="${exerciseIndex}:${setIndex}:weight">
-                <input
-                  aria-label="Reps for set ${setIndex + 1}"
-                  inputmode="numeric"
-                  type="number"
-                  min="1"
-                  step="1"
-                  value="${esc(set.reps)}"
-                  data-set-input="${exerciseIndex}:${setIndex}:reps">
-                <button class="check-button" data-complete-set="${exerciseIndex}:${setIndex}" aria-label="Mark set complete">✓</button>
-              </div>
-            `;
-          }).join("")}
+          <span>Swipe to switch</span>
         </div>
-
-        <button class="add-set-button" data-add-set="${exerciseIndex}">＋ Add Set</button>
+        <div class="exercise-variant-carousel" data-variant-carousel="${slotIndex}">
+          ${slot.variants.map((ex, variantIndex) => `
+            <section class="exercise-variant-slide ${variantIndex === selected ? "selected" : ""}">
+              <div class="variant-status">${variantIndex === selected ? "Selected" : "Alternative"}</div>
+              ${exerciseCardBody(ex, slotIndex, variantIndex)}
+            </section>
+          `).join("")}
+        </div>
+        <div class="variant-footer">
+          <span>Each exercise keeps separate previous weights, reps, and set history.</span>
+          <div class="variant-dots" aria-hidden="true">
+            ${slot.variants.map((_, index) => `<span class="variant-dot ${index === selected ? "active" : ""}"></span>`).join("")}
+          </div>
+        </div>
       </article>
     `;
   }
 
-  function openExerciseDetail(exerciseIndex) {
-    const ex = active.exercises[exerciseIndex];
+  function exerciseCardBody(ex, slotIndex, variantIndex) {
+    return `
+      <button class="exercise-heading" data-exercise-detail="${slotIndex}:${variantIndex}">
+        <span class="exercise-thumb" aria-hidden="true">${exerciseImage(ex, true)}</span>
+        <span class="exercise-heading-copy">
+          <strong>${esc(ex.name)}${ex.optional ? ' <span class="optional-tag">Optional</span>' : ""}</strong>
+          <small>${esc(ex.targetSets || ex.sets.length)} × ${esc(ex.reps || "reps")} · ${esc((ex.primary || []).join(" · "))}</small>
+        </span>
+        <span class="info-dot">i</span>
+      </button>
+
+      <div class="set-table">
+        <div class="set-table-head">
+          <span>SET</span>
+          <span>PREVIOUS</span>
+          <span>${esc(ex.unit.toUpperCase())}</span>
+          <span>REPS</span>
+          <span>✓</span>
+        </div>
+
+        ${ex.sets.map((set, setIndex) => {
+          const previous = previousSet(ex.exerciseId, setIndex);
+          const previousText = previous ? previous.weight + " × " + previous.reps : "—";
+          return `
+            <div class="set-entry ${set.completed ? "complete" : ""}">
+              <span class="set-badge">${setIndex + 1}</span>
+              <span class="previous-value">${esc(previousText)}</span>
+              <input
+                aria-label="Weight for ${esc(ex.name)} set ${setIndex + 1}"
+                inputmode="decimal"
+                type="number"
+                min="0"
+                step="0.5"
+                value="${esc(set.weight)}"
+                data-set-input="${slotIndex}:${variantIndex}:${setIndex}:weight">
+              <input
+                aria-label="Reps for ${esc(ex.name)} set ${setIndex + 1}"
+                inputmode="numeric"
+                type="number"
+                min="1"
+                step="1"
+                value="${esc(set.reps)}"
+                data-set-input="${slotIndex}:${variantIndex}:${setIndex}:reps">
+              <button class="check-button" data-complete-set="${slotIndex}:${variantIndex}:${setIndex}" aria-label="Mark set complete">✓</button>
+            </div>
+          `;
+        }).join("")}
+      </div>
+
+      <button class="add-set-button" data-add-set="${slotIndex}:${variantIndex}">＋ Add Set</button>
+    `;
+  }
+
+  function openExerciseDetail(slotIndex, variantIndex = -1) {
+    const ex = exerciseAt(slotIndex, variantIndex);
+    if (!ex) return;
     document.querySelector(".detail-overlay")?.remove();
 
     const overlay = document.createElement("div");
@@ -453,12 +563,7 @@
         <div class="exercise-photo-panel">
           ${exerciseImage(ex)}
           ${exerciseMedia(ex.exerciseId)?.sourceUrl ? `
-            <a
-              class="image-source"
-              href="${esc(exerciseMedia(ex.exerciseId).sourceUrl)}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a class="image-source" href="${esc(exerciseMedia(ex.exerciseId).sourceUrl)}" target="_blank" rel="noopener noreferrer">
               Demo source: ${esc(exerciseMedia(ex.exerciseId).sourceName || "exercise reference")} ↗
             </a>
           ` : ""}
@@ -516,14 +621,17 @@
       routineName: active.routineName,
       startedAt: active.startedAt,
       completedAt: new Date().toISOString(),
-      exercises: active.exercises.map(ex => ({
-        exerciseId: ex.exerciseId,
-        name: ex.name,
-        unit: ex.unit,
-        sets: ex.sets
-          .filter(set => set.completed)
-          .map(set => ({ weight: Number(set.weight), reps: Number(set.reps) }))
-      }))
+      exercises: active.exercises.map(slot => {
+        const ex = selectedExercise(slot);
+        return {
+          exerciseId: ex.exerciseId,
+          name: ex.name,
+          unit: ex.unit,
+          sets: ex.sets
+            .filter(set => set.completed)
+            .map(set => ({ weight: Number(set.weight), reps: Number(set.reps) }))
+        };
+      })
     });
 
     save(HISTORY_KEY, history);
@@ -560,7 +668,7 @@
               <div class="exercise-summary">
                 <strong>${esc(ex.name)}</strong>
                 <span>${ex.sets?.length
-                  ? ex.sets.map(s => esc(s.weight) + " " + esc(ex.unit) + " × " + esc(s.reps)).join(" · ")
+                  ? ex.sets.map(set => esc(set.weight) + " " + esc(ex.unit) + " × " + esc(set.reps)).join(" · ")
                   : "No completed sets"}</span>
               </div>
             `).join("")}
