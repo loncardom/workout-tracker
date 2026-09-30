@@ -1,0 +1,126 @@
+name: Localize exercise media
+
+on:
+  push:
+    paths:
+      - .github/workflows/localize-exercise-media.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  localize-media:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install image tooling
+        run: python -m pip install --quiet Pillow
+
+      - name: Download source media
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/exercises /tmp/exercise-media
+
+          curl -fL --retry 3 \
+            https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull/0.jpg \
+            -o /tmp/exercise-media/face-pull-0.jpg
+          curl -fL --retry 3 \
+            https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Face_Pull/1.jpg \
+            -o /tmp/exercise-media/face-pull-1.jpg
+
+          curl -fL --retry 3 \
+            https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Hack_Squat/0.jpg \
+            -o /tmp/exercise-media/hack-squat-0.jpg
+          curl -fL --retry 3 \
+            https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Hack_Squat/1.jpg \
+            -o /tmp/exercise-media/hack-squat-1.jpg
+
+          curl -fL --retry 3 \
+            https://raw.githubusercontent.com/chronicweirdo/chronicweirdo/gh-pages/calisthenics/thoracic_extension.gif.webp \
+            -o /tmp/exercise-media/thoracic-extension.webp
+
+      - name: Build local animated GIFs
+        run: |
+          python - <<'PY'
+          from PIL import Image, ImageOps, ImageSequence
+          from pathlib import Path
+
+          TMP = Path('/tmp/exercise-media')
+          OUT = Path('assets/exercises')
+          OUT.mkdir(parents=True, exist_ok=True)
+          SIZE = (520, 520)
+
+          def normalized(path):
+              img = Image.open(path).convert('RGB')
+              img = ImageOps.contain(img, SIZE, method=Image.Resampling.LANCZOS)
+              canvas = Image.new('RGB', SIZE, 'white')
+              canvas.paste(img, ((SIZE[0] - img.width)//2, (SIZE[1] - img.height)//2))
+              return canvas
+
+          def two_frame_gif(first, second, output):
+              a = normalized(first)
+              b = normalized(second)
+              frames = [a, b, a]
+              frames[0].save(
+                  output,
+                  save_all=True,
+                  append_images=frames[1:],
+                  duration=[650, 650, 350],
+                  loop=0,
+                  optimize=True,
+              )
+
+          two_frame_gif(TMP/'face-pull-0.jpg', TMP/'face-pull-1.jpg', OUT/'face-pull.gif')
+          two_frame_gif(TMP/'hack-squat-0.jpg', TMP/'hack-squat-1.jpg', OUT/'hack-squat.gif')
+
+          source = Image.open(TMP/'thoracic-extension.webp')
+          n_frames = getattr(source, 'n_frames', 1)
+          step = max(1, n_frames // 24)
+          frames = []
+          durations = []
+          for index, frame in enumerate(ImageSequence.Iterator(source)):
+              if index % step:
+                  continue
+              rgb = frame.convert('RGB')
+              rgb = ImageOps.contain(rgb, SIZE, method=Image.Resampling.LANCZOS)
+              canvas = Image.new('RGB', SIZE, 'white')
+              canvas.paste(rgb, ((SIZE[0] - rgb.width)//2, (SIZE[1] - rgb.height)//2))
+              frames.append(canvas)
+              durations.append(max(60, int(frame.info.get('duration', 100)) * step))
+
+          if not frames:
+              raise RuntimeError('No thoracic-extension frames decoded')
+
+          frames[0].save(
+              OUT/'thoracic-extension.gif',
+              save_all=True,
+              append_images=frames[1:],
+              duration=durations,
+              loop=0,
+              optimize=True,
+          )
+
+          for path in [OUT/'face-pull.gif', OUT/'hack-squat.gif', OUT/'thoracic-extension.gif']:
+              if path.stat().st_size == 0:
+                  raise RuntimeError(f'Empty output: {path}')
+              print(path, path.stat().st_size)
+          PY
+
+      - name: Commit localized media
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/exercises/face-pull.gif assets/exercises/hack-squat.gif assets/exercises/thoracic-extension.gif
+          if git diff --cached --quiet; then
+            echo "Exercise media already localized."
+            exit 0
+          fi
+          git commit -m "Store exercise animations locally"
+          git push origin HEAD:main
