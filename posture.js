@@ -304,29 +304,15 @@
   }
 
   function mountHomeEntry() {
-    const routineList = app.querySelector(".routine-list");
-    const homeHero = app.querySelector(".home-hero");
-
-    if (!routineList || !homeHero) {
+    const button = app.querySelector("[data-posture-routine]");
+    if (!button) {
       postureOpen = false;
       return;
     }
 
-    if (routineList.querySelector("[data-posture-routine]")) return;
-
-    routineList.insertAdjacentHTML("beforeend", `
-      <button class="routine-row posture-routine-row" data-posture-routine>
-        <span class="routine-index">6</span>
-        <span class="routine-main">
-          <strong>Posture</strong>
-          <span>${exercises.length} exercises · fixed routine · posture & mobility</span>
-          <small>Daily + ~3×/week movements</small>
-        </span>
-        <span class="chevron">›</span>
-      </button>
-    `);
-
-    routineList.querySelector("[data-posture-routine]").onclick = openPosture;
+    if (button.dataset.postureBound === "true") return;
+    button.dataset.postureBound = "true";
+    button.onclick = openPosture;
   }
 
   const observer = new MutationObserver(mountHomeEntry);
