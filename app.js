@@ -222,7 +222,7 @@
       ` : ""}
 
       <div class="routine-list">
-        ${window.WORKOUTS.map((routine, index) => {
+        ${window.WORKOUTS.filter(routine => !routine.specialty).map((routine, index) => {
           const last = lastRoutineSession(routine.id);
           return `
             <button class="routine-row" data-routine="${esc(routine.id)}">
@@ -237,6 +237,32 @@
           `;
         }).join("")}
       </div>
+
+      <section class="specialty-section">
+        <div class="specialty-heading">
+          <h3>Specialty</h3>
+          <span>Outside the weekly 1–5 split</span>
+        </div>
+        <div class="specialty-list">
+          <button class="routine-row specialty-row" data-posture-routine>
+            <span class="routine-index specialty-icon">P</span>
+            <span class="routine-main">
+              <strong>Posture</strong>
+              <span>Posture, mobility and face-pull tracking</span>
+            </span>
+            <span class="chevron">›</span>
+          </button>
+          <button class="routine-row specialty-row" data-routine="abs">
+            <span class="routine-index specialty-icon">A</span>
+            <span class="routine-main">
+              <strong>Abs</strong>
+              <span>2 exercise slots · weighted sets · choose one variation per slot</span>
+              ${lastRoutineSession("abs") ? `<small>Last: ${formatDate(lastRoutineSession("abs").completedAt)}</small>` : ""}
+            </span>
+            <span class="chevron">›</span>
+          </button>
+        </div>
+      </section>
 
       ${history.length ? `
         <button class="history-link" id="openHistory">
@@ -466,7 +492,7 @@
         <div class="variant-header">
           <div>
             <span class="mini-label">CHOOSE ONE</span>
-            <strong>Hack Squat / Leg Press</strong>
+            <strong>${slot.variants.map(ex => esc(ex.name)).join(" / ")}</strong>
           </div>
           <span>Swipe to switch</span>
         </div>
@@ -479,7 +505,7 @@
           `).join("")}
         </div>
         <div class="variant-footer">
-          <span>Each exercise keeps separate previous weights, reps, and set history.</span>
+          <span>Each alternative keeps separate previous weights, reps, and set history.</span>
           <div class="variant-dots" aria-hidden="true">
             ${slot.variants.map((_, index) => `<span class="variant-dot ${index === selected ? "active" : ""}"></span>`).join("")}
           </div>
