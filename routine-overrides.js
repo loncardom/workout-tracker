@@ -63,4 +63,28 @@
     sourceName: "MuscleWiki",
     caption: "Machine leg press"
   };
+
+  window.EXERCISE_VARIANTS["lat-pulldown-cable-crunch-away"] = {
+    id: "lat-pulldown-cable-crunch-away",
+    name: "Lat Pulldown Cable Crunch (Facing Away)",
+    unit: "lb",
+    equipment: "Lat pulldown cable station",
+    targetSets: 2,
+    reps: "10–15",
+    primary: ["Abs"],
+    secondary: ["Obliques"],
+    note: "Face away from the lat pulldown cable and perform the crunch from that station."
+  };
+
+  window.EXERCISE_VARIANTS["garhammer-raise"] = {
+    id: "garhammer-raise",
+    name: "Garhammer Raises",
+    unit: "lb",
+    equipment: "Hanging station / captain's chair",
+    targetSets: 2,
+    reps: "10–15",
+    primary: ["Lower abs"],
+    secondary: ["Hip flexors"],
+    note: "Enter 0 lb when performed as bodyweight, or log any added resistance."
+  };
 })();
