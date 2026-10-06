@@ -299,10 +299,66 @@ window.WORKOUTS = [
         secondary: []
       }
     ]
+  },
+  {
+    id: "abs",
+    name: "Abs",
+    specialty: true,
+    description: "Weighted core work",
+    exercises: [
+      {
+        id: "standing-cable-crunch-away",
+        name: "Standing Cable Crunch (Facing Away)",
+        unit: "lb",
+        equipment: "Cable stack",
+        targetSets: 2,
+        reps: "10–15",
+        primary: ["Abs"],
+        secondary: ["Obliques"],
+        alternativeIds: ["lat-pulldown-cable-crunch-away"],
+        note: "Face away from the cable stack. Use the normal set logger for weight and reps."
+      },
+      {
+        id: "reverse-crunch",
+        name: "Reverse Crunch",
+        unit: "lb",
+        equipment: "Bench / floor",
+        targetSets: 2,
+        reps: "10–15",
+        primary: ["Lower abs"],
+        secondary: ["Abs"],
+        alternativeIds: ["garhammer-raise"],
+        note: "Enter 0 lb when performed unweighted, or log added resistance when you use it."
+      }
+    ]
   }
 ];
 
 window.EXERCISE_MEDIA = {
+  "standing-cable-crunch-away": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Cables-cable-standing-crunch-side.jpg&w=3840",
+    sourceUrl: "https://staging.musclewiki.com/exercise/cable-standing-crunch",
+    sourceName: "MuscleWiki",
+    caption: "Standing cable crunch facing away"
+  },
+  "lat-pulldown-cable-crunch-away": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Cables-cable-standing-crunch-side.jpg&w=3840",
+    sourceUrl: "https://staging.musclewiki.com/exercise/cable-standing-crunch",
+    sourceName: "MuscleWiki",
+    caption: "Facing-away cable crunch movement reference"
+  },
+  "reverse-crunch": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Bodyweight-reverse-crunch-side.jpg&w=3840",
+    sourceUrl: "https://staging.musclewiki.com/ar-sa/exercise/reverse-crunch",
+    sourceName: "MuscleWiki",
+    caption: "Reverse crunch"
+  },
+  "garhammer-raise": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Bodyweight-hanging-knee-raises-side.jpg&w=3840",
+    sourceUrl: "https://staging.musclewiki.com/exercise/hanging-knee-raises",
+    sourceName: "MuscleWiki",
+    caption: "Hanging knee raise reference for Garhammer raises"
+  },
   "pec-deck": {
     imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-bent-arm-pec-fly-side.jpg&w=3840",
     sourceUrl: "https://musclewiki.com/pt-br/exercise/machine-bent-arm-pec-fly",
