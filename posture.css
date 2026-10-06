@@ -224,3 +224,69 @@
     height: 360px;
   }
 }
+
+
+/* Face pull weight-only logging */
+.posture-weight-log {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  align-items: end;
+  gap: 10px;
+  margin: 12px 16px 0;
+}
+
+.posture-weight-field label {
+  display: block;
+  margin: 0 0 6px 3px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+}
+
+.posture-weight-field input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid #dfe2e7;
+  border-radius: 13px;
+  background: #fff;
+  color: var(--text);
+  padding: 0 13px;
+  font-size: 18px;
+  font-weight: 700;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.posture-weight-field input::-webkit-outer-spin-button,
+.posture-weight-field input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.posture-weight-field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(52,141,245,.10);
+}
+
+.posture-weight-check {
+  width: 52px;
+  height: 48px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--surface-2);
+  color: #9aa1aa;
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.posture-weight-check.saved {
+  background: #e5f2ff;
+  color: var(--accent);
+}
+
+.posture-weight-status {
+  margin: 6px 18px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
