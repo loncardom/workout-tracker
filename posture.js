@@ -5,6 +5,30 @@
   const menuButton = document.getElementById("menuButton");
   if (!app || !pageTitle || !backButton || !menuButton) return;
 
+  const FACE_PULL_HISTORY_KEY = "workoutTracker.posture.facePull.history.v1";
+
+  function getFacePullHistory() {
+    try {
+      const value = JSON.parse(localStorage.getItem(FACE_PULL_HISTORY_KEY) || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function lastFacePullWeight() {
+    return getFacePullHistory()[0]?.weight ?? "";
+  }
+
+  function saveFacePullWeight(weight) {
+    const history = getFacePullHistory();
+    history.unshift({
+      weight,
+      completedAt: new Date().toISOString()
+    });
+    localStorage.setItem(FACE_PULL_HISTORY_KEY, JSON.stringify(history.slice(0, 100)));
+  }
+
   const exercises = [
     {
       title: "Chin Tucks",
@@ -49,8 +73,10 @@
       }
     },
     {
+      id: "face-pulls",
       title: "Face Pulls",
       purpose: "Preferred scapular-strength exercise for posture / rounded shoulders",
+      logWeight: true,
       frequency: "3× / week",
       prescription: "2 × 10–15",
       detail: "Face pull preferred",
@@ -160,7 +186,7 @@
       <section class="posture-page" id="posturePage">
         <section class="hero posture-page-hero">
           <h2>Posture</h2>
-          <p>Forward head · rounded shoulders · thoracic extension · active kyphosis correction · rib/pelvis control. Prescriptions are fixed; there is nothing to log.</p>
+          <p>Forward head · rounded shoulders · thoracic extension · active kyphosis correction · rib/pelvis control. Face Pulls track weight only; the other posture movements use fixed prescriptions.</p>
         </section>
 
         <div class="posture-list">
@@ -178,6 +204,26 @@
                 <strong>${exercise.prescription}</strong>
                 <span>${exercise.detail}</span>
               </div>
+              ${exercise.logWeight ? `
+                <div class="posture-weight-log" data-face-pull-log>
+                  <div class="posture-weight-field">
+                    <label for="facePullWeight">WEIGHT (LB)</label>
+                    <input
+                      id="facePullWeight"
+                      type="number"
+                      min="0"
+                      step="0.5"
+                      inputmode="decimal"
+                      value="${lastFacePullWeight()}"
+                      placeholder="0"
+                      aria-label="Face pull weight">
+                  </div>
+                  <button class="posture-weight-check" type="button" data-face-pull-save aria-label="Save face pull weight">✓</button>
+                </div>
+                <div class="posture-weight-status" data-face-pull-status>
+                  ${lastFacePullWeight() !== "" ? `Last saved: ${lastFacePullWeight()} lb` : "No weight saved yet"}
+                </div>
+              ` : ""}
               <p class="posture-instructions">${exercise.instructions}</p>
             </article>
           `).join("")}
@@ -192,6 +238,33 @@
         img.classList.add("failed");
         img.closest(".posture-media-frame")?.classList.add("failed");
       });
+    });
+  }
+
+  function bindFacePullLogging(root) {
+    const input = root.querySelector("#facePullWeight");
+    const saveButton = root.querySelector("[data-face-pull-save]");
+    const status = root.querySelector("[data-face-pull-status]");
+    if (!input || !saveButton || !status) return;
+
+    input.addEventListener("input", () => {
+      saveButton.classList.remove("saved");
+      saveButton.setAttribute("aria-label", "Save face pull weight");
+      status.textContent = "Tap ✓ to save";
+    });
+
+    saveButton.addEventListener("click", () => {
+      const weight = Number(input.value);
+      if (!Number.isFinite(weight) || weight < 0 || input.value.trim() === "") {
+        status.textContent = "Enter a valid weight first";
+        input.focus();
+        return;
+      }
+
+      saveFacePullWeight(weight);
+      saveButton.classList.add("saved");
+      saveButton.setAttribute("aria-label", "Face pull weight saved");
+      status.textContent = "Saved " + weight + " lb";
     });
   }
 
@@ -220,6 +293,7 @@
     app.insertAdjacentHTML("beforeend", posturePageMarkup());
     const page = document.getElementById("posturePage");
     attachImageFallbacks(page);
+    bindFacePullLogging(page);
 
     pageTitle.textContent = "Posture";
     backButton.classList.remove("hidden");
