@@ -11,6 +11,7 @@
   let view = "home";
   let statsTimer = null;
   let active = hydrateActive(load(ACTIVE_KEY, null));
+  let savedActive = active?.startedAt ? active : null;
 
   const esc = value => String(value ?? "").replace(/[&<>"']/g, ch => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
@@ -156,6 +157,7 @@
     pageTitle.textContent = title;
     backButton.classList.toggle("hidden", !canBack);
     menuButton.classList.toggle("finish-button", finish);
+    document.querySelector(".topbar")?.classList.toggle("workout-topbar", finish);
     menuButton.textContent = finish ? "Finish" : "⚙";
     menuButton.setAttribute("aria-label", finish ? "Finish workout" : "Open settings");
   }
@@ -208,11 +210,11 @@
         <p>Choose a routine. Your workout history stays on this device.</p>
       </section>
 
-      ${active?.startedAt ? `
+      ${savedActive?.startedAt ? `
         <div class="resume-card">
           <div>
             <span class="mini-label">IN PROGRESS</span>
-            <h3>${esc(active.routineName)}</h3>
+            <h3>${esc(savedActive.routineName)}</h3>
           </div>
           <div class="resume-actions">
             <button class="text-button" id="discardWorkout">Discard</button>
@@ -276,10 +278,15 @@
       btn.onclick = () => startWorkout(btn.dataset.routine);
     });
 
-    document.getElementById("resumeWorkout")?.addEventListener("click", renderWorkout);
+    document.getElementById("resumeWorkout")?.addEventListener("click", () => {
+      if (!savedActive) return;
+      active = savedActive;
+      renderWorkout();
+    });
     document.getElementById("discardWorkout")?.addEventListener("click", () => {
       if (confirm("Discard the workout in progress?")) {
-        active = null;
+        if (active?.id === savedActive?.id) active = null;
+        savedActive = null;
         localStorage.removeItem(ACTIVE_KEY);
         renderHome();
       }
@@ -290,7 +297,6 @@
   function startWorkout(routineId) {
     const routine = window.WORKOUTS.find(item => item.id === routineId);
     if (!routine) return;
-    if (active?.startedAt && !confirm("Replace the workout currently in progress?")) return;
 
     active = {
       id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
@@ -304,10 +310,22 @@
   }
 
   function ensureWorkoutStarted() {
-    if (!active || active.startedAt) return;
+    if (!active) return false;
+    if (active.startedAt) return true;
+
+    if (savedActive?.startedAt && savedActive.id !== active.id) {
+      const replace = confirm(
+        "Hold on — " + savedActive.routineName + " is already in progress. Starting " +
+        active.routineName + " will replace it. Continue?"
+      );
+      if (!replace) return false;
+    }
+
     active.startedAt = new Date().toISOString();
+    savedActive = active;
     save(ACTIVE_KEY, active);
     flash("Workout started");
+    return true;
   }
 
   function workoutElapsedMs() {
@@ -437,7 +455,12 @@
         const set = ex?.sets?.[Number(setIndex)];
         if (!set) return;
 
-        ensureWorkoutStarted();
+        const previousValue = set[field];
+        if (!ensureWorkoutStarted()) {
+          input.value = previousValue;
+          return;
+        }
+
         set[field] = input.value;
         save(ACTIVE_KEY, active);
       });
@@ -459,7 +482,7 @@
           }
         }
 
-        ensureWorkoutStarted();
+        if (!ensureWorkoutStarted()) return;
         set.completed = !set.completed;
         save(ACTIVE_KEY, active);
         renderWorkout();
@@ -632,7 +655,6 @@
 
     if (!active.startedAt) {
       active = null;
-      localStorage.removeItem(ACTIVE_KEY);
       renderHome();
       return;
     }
@@ -662,6 +684,7 @@
 
     save(HISTORY_KEY, history);
     active = null;
+    savedActive = null;
     localStorage.removeItem(ACTIVE_KEY);
     stopStatsTimer();
     flash("Workout saved");
