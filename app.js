@@ -179,10 +179,50 @@
     return window.EXERCISE_MEDIA?.[exerciseId] || null;
   }
 
+  function muscleWikiVideoUrl(media) {
+    const imageUrl = media?.imageUrl;
+    if (!imageUrl || !/musclewiki\.com/i.test(imageUrl)) return null;
+
+    try {
+      const parsed = new URL(imageUrl, window.location.href);
+      let candidate = parsed.searchParams.get("url") || parsed.pathname;
+      candidate = decodeURIComponent(candidate);
+      const filename = candidate.split("/").pop() || "";
+      if (!/^og-/i.test(filename)) return null;
+
+      const videoFilename = filename
+        .replace(/^og-/i, "")
+        .replace(/\.(?:jpg|jpeg|png|webp|gif)$/i, ".mp4");
+
+      return "https://media.musclewiki.com/media/uploads/videos/branded/" + videoFilename;
+    } catch {
+      return null;
+    }
+  }
+
   function exerciseImage(ex, compact = false) {
     const media = exerciseMedia(ex.exerciseId);
     if (!media?.imageUrl) {
       return `<span class="photo-fallback">${esc(ex.name.slice(0, 1))}</span>`;
+    }
+
+    if (!compact) {
+      const videoUrl = muscleWikiVideoUrl(media);
+      if (videoUrl) {
+        return `
+          <video
+            class="exercise-demo-video"
+            src="${esc(videoUrl)}"
+            poster="${esc(media.imageUrl)}"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            aria-label="${esc(media.caption || ex.name)} animated exercise demonstration">
+          </video>
+        `;
+      }
     }
 
     return `
@@ -194,6 +234,32 @@
         referrerpolicy="no-referrer"
       >
     `;
+  }
+
+  let modalScrollY = 0;
+
+  function lockModalScroll() {
+    if (document.body.classList.contains("detail-modal-open")) return;
+    modalScrollY = window.scrollY;
+    document.body.style.top = `-${modalScrollY}px`;
+    document.body.classList.add("detail-modal-open");
+  }
+
+  function unlockModalScroll() {
+    if (!document.body.classList.contains("detail-modal-open")) return;
+    document.body.classList.remove("detail-modal-open");
+    document.body.style.top = "";
+    window.scrollTo(0, modalScrollY);
+  }
+
+  function placeCaretAtEnd(input) {
+    if (!input) return;
+    requestAnimationFrame(() => {
+      try {
+        const end = input.value.length;
+        input.setSelectionRange(end, end);
+      } catch {}
+    });
   }
 
   function renderHome() {
@@ -449,6 +515,13 @@
     });
 
     document.querySelectorAll("[data-set-input]").forEach(input => {
+      input.addEventListener("focus", () => placeCaretAtEnd(input));
+      input.addEventListener("pointerup", event => {
+        event.preventDefault();
+        placeCaretAtEnd(input);
+      });
+      input.addEventListener("click", () => placeCaretAtEnd(input));
+
       input.addEventListener("input", () => {
         const [slotIndex, variantIndex, setIndex, field] = input.dataset.setInput.split(":");
         const ex = exerciseAt(Number(slotIndex), Number(variantIndex));
@@ -566,18 +639,16 @@
               <span class="previous-value">${esc(previousText)}</span>
               <input
                 aria-label="Weight for ${esc(ex.name)} set ${setIndex + 1}"
+                type="text"
                 inputmode="decimal"
-                type="number"
-                min="0"
-                step="0.5"
+                autocomplete="off"
                 value="${esc(set.weight)}"
                 data-set-input="${slotIndex}:${variantIndex}:${setIndex}:weight">
               <input
                 aria-label="Reps for ${esc(ex.name)} set ${setIndex + 1}"
+                type="text"
                 inputmode="numeric"
-                type="number"
-                min="1"
-                step="1"
+                autocomplete="off"
                 value="${esc(set.reps)}"
                 data-set-input="${slotIndex}:${variantIndex}:${setIndex}:reps">
               <button class="check-button" data-complete-set="${slotIndex}:${variantIndex}:${setIndex}" aria-label="Mark set complete">✓</button>
@@ -593,7 +664,11 @@
   function openExerciseDetail(slotIndex, variantIndex = -1) {
     const ex = exerciseAt(slotIndex, variantIndex);
     if (!ex) return;
-    document.querySelector(".detail-overlay")?.remove();
+    const existingOverlay = document.querySelector(".detail-overlay");
+    if (existingOverlay) {
+      existingOverlay.remove();
+      unlockModalScroll();
+    }
 
     const overlay = document.createElement("div");
     overlay.className = "detail-overlay";
@@ -644,10 +719,20 @@
     `;
 
     document.body.appendChild(overlay);
-    overlay.querySelector(".close-detail").onclick = () => overlay.remove();
+    lockModalScroll();
+
+    const closeDetail = () => {
+      overlay.remove();
+      unlockModalScroll();
+    };
+
+    overlay.querySelector(".close-detail").onclick = closeDetail;
     overlay.addEventListener("click", event => {
-      if (event.target === overlay) overlay.remove();
+      if (event.target === overlay) closeDetail();
     });
+    overlay.addEventListener("touchmove", event => {
+      if (event.target === overlay) event.preventDefault();
+    }, { passive: false });
   }
 
   function finishWorkout() {
