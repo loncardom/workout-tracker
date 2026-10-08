@@ -789,3 +789,25 @@ body.detail-modal-open {
   padding-left: 8px;
   padding-right: 8px;
 }
+
+
+/* Weekly cooldown dots */
+.routine-name-with-cooldown {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+}
+
+.cooldown-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(17, 24, 39, .05);
+}
+
+.cooldown-red { background: #ef4444; }
+.cooldown-orange { background: #f97316; }
+.cooldown-yellow { background: #eab308; }
+.cooldown-green { background: #22c55e; }
