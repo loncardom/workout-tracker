@@ -736,3 +736,18 @@ h1 { margin: 0; font-size: 21px; line-height: 1.1; font-weight: 650; }
   background: var(--accent-soft);
   color: var(--accent);
 }
+
+
+/* Sticky workout header reinforcement */
+.topbar.workout-topbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 3px 14px rgba(17, 24, 39, .08);
+  isolation: isolate;
+}
+
+.topbar.workout-topbar .finish-button {
+  position: relative;
+  z-index: 1;
+}
