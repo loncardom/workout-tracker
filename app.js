@@ -329,6 +329,15 @@
             </span>
             <span class="chevron">›</span>
           </button>
+          <button class="routine-row specialty-row" data-routine="rack">
+            <span class="routine-index specialty-icon">R</span>
+            <span class="routine-main">
+              <strong>Rack</strong>
+              <span>6 movements · sets, weight and reps · fully trackable</span>
+              ${lastRoutineSession("rack") ? `<small>Last: ${formatDate(lastRoutineSession("rack").completedAt)}</small>` : ""}
+            </span>
+            <span class="chevron">›</span>
+          </button>
         </div>
       </section>
 
