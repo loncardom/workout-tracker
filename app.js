@@ -168,6 +168,25 @@
     }).format(new Date(iso));
   }
 
+  function calendarDaysAgo(iso) {
+    if (!iso) return Infinity;
+    const completed = new Date(iso);
+    const now = new Date();
+    const completedDay = new Date(completed.getFullYear(), completed.getMonth(), completed.getDate());
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return Math.max(0, Math.round((today - completedDay) / 86400000));
+  }
+
+  function cooldownStatus(lastSession) {
+    const days = calendarDaysAgo(lastSession?.completedAt);
+    if (!Number.isFinite(days) || days >= 6) {
+      return { className: "cooldown-green", label: lastSession ? days + " days ago" : "Never completed" };
+    }
+    if (days >= 4) return { className: "cooldown-yellow", label: days + " days ago" };
+    if (days >= 2) return { className: "cooldown-orange", label: days + " days ago" };
+    return { className: "cooldown-red", label: days === 0 ? "Completed today" : "Completed yesterday" };
+  }
+
   function formatDuration(ms) {
     const seconds = Math.max(0, Math.floor(ms / 1000));
     const minutes = Math.floor(seconds / 60);
@@ -292,11 +311,18 @@
       <div class="routine-list">
         ${window.WORKOUTS.filter(routine => !routine.specialty).map((routine, index) => {
           const last = lastRoutineSession(routine.id);
+          const cooldown = cooldownStatus(last);
           return `
             <button class="routine-row" data-routine="${esc(routine.id)}">
               <span class="routine-index">${index + 1}</span>
               <span class="routine-main">
-                <strong>${esc(routine.name)}</strong>
+                <strong class="routine-name-with-cooldown">
+                  ${esc(routine.name)}
+                  <span
+                    class="cooldown-dot ${cooldown.className}"
+                    title="${esc(cooldown.label)}"
+                    aria-label="Cooldown: ${esc(cooldown.label)}"></span>
+                </strong>
                 <span>${routine.exercises.length} exercises · ${routine.exercises.reduce((sum, ex) => sum + (ex.targetSets || 0), 0)} planned sets · ${esc(routine.description)}</span>
                 ${last ? `<small>Last: ${formatDate(last.completedAt)}</small>` : ""}
               </span>
