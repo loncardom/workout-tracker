@@ -751,3 +751,41 @@ h1 { margin: 0; font-size: 21px; line-height: 1.1; font-weight: 650; }
   position: relative;
   z-index: 1;
 }
+
+
+/* Exercise video + modal scroll fixes */
+.exercise-photo-panel > .exercise-demo-video {
+  width: 100%;
+  max-height: min(52vh, 430px);
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 18px;
+  background: #f3f5f8;
+  border: 1px solid #eceef1;
+}
+
+body.detail-modal-open {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+.detail-overlay {
+  overscroll-behavior: contain;
+  touch-action: none;
+}
+
+.detail-sheet {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+.set-entry input {
+  padding-left: 8px;
+  padding-right: 8px;
+}
