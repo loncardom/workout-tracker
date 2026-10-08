@@ -331,10 +331,120 @@ window.WORKOUTS = [
         note: "Enter 0 lb when performed unweighted, or log added resistance when you use it."
       }
     ]
+  },
+  {
+    id: "rack",
+    name: "Rack",
+    specialty: true,
+    description: "Six fundamental barbell / bodyweight movement patterns",
+    exercises: [
+      {
+        id: "barbell-bench-press",
+        name: "Barbell Bench Press",
+        unit: "lb",
+        equipment: "Bench + barbell",
+        targetSets: 3,
+        reps: "5–8",
+        primary: ["Chest"],
+        secondary: ["Front delts", "Triceps"],
+        note: "Horizontal push."
+      },
+      {
+        id: "barbell-overhead-press",
+        name: "Barbell Overhead Press",
+        unit: "lb",
+        equipment: "Rack + barbell",
+        targetSets: 3,
+        reps: "5–8",
+        primary: ["Shoulders"],
+        secondary: ["Triceps", "Upper chest"],
+        note: "Vertical push."
+      },
+      {
+        id: "pull-ups",
+        name: "Pull-Ups",
+        unit: "lb",
+        equipment: "Pull-up bar",
+        targetSets: 3,
+        reps: "5–10",
+        primary: ["Lats"],
+        secondary: ["Biceps", "Upper back"],
+        note: "Vertical pull. Enter 0 lb for bodyweight-only sets, or added weight when loaded."
+      },
+      {
+        id: "barbell-row",
+        name: "Barbell Row",
+        unit: "lb",
+        equipment: "Barbell",
+        targetSets: 3,
+        reps: "5–8",
+        primary: ["Mid back", "Lats"],
+        secondary: ["Biceps", "Rear delts"],
+        note: "Horizontal pull."
+      },
+      {
+        id: "barbell-deadlift",
+        name: "Barbell Deadlift",
+        unit: "lb",
+        equipment: "Barbell",
+        targetSets: 3,
+        reps: "3–6",
+        primary: ["Glutes", "Hamstrings", "Back"],
+        secondary: ["Forearms", "Traps"],
+        note: "Hinge."
+      },
+      {
+        id: "barbell-squat",
+        name: "Barbell Squat",
+        unit: "lb",
+        equipment: "Rack + barbell",
+        targetSets: 3,
+        reps: "5–8",
+        primary: ["Quads", "Glutes"],
+        secondary: ["Hamstrings", "Core"],
+        note: "Squat."
+      }
+    ]
   }
 ];
 
 window.EXERCISE_MEDIA = {
+  "barbell-bench-press": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-bench-press-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/barbell-bench-press",
+    sourceName: "MuscleWiki",
+    caption: "Barbell bench press"
+  },
+  "barbell-overhead-press": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-overhead-press-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/barbell-overhead-press",
+    sourceName: "MuscleWiki",
+    caption: "Barbell overhead press"
+  },
+  "pull-ups": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Bodyweight-pull-up-front.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/pull-up",
+    sourceName: "MuscleWiki",
+    caption: "Pull-up"
+  },
+  "barbell-row": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-bent-over-row-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/barbell-bent-over-row",
+    sourceName: "MuscleWiki",
+    caption: "Barbell row"
+  },
+  "barbell-deadlift": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-deadlift-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/barbell-deadlift",
+    sourceName: "MuscleWiki",
+    caption: "Barbell deadlift"
+  },
+  "barbell-squat": {
+    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-squat-side.jpg&w=3840",
+    sourceUrl: "https://musclewiki.com/exercise/barbell-squat",
+    sourceName: "MuscleWiki",
+    caption: "Barbell squat"
+  },
   "standing-cable-crunch-away": {
     imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Cables-cable-standing-crunch-side.jpg&w=3840",
     sourceUrl: "https://staging.musclewiki.com/exercise/cable-standing-crunch",
