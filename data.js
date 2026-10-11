@@ -464,10 +464,11 @@ window.EXERCISE_MEDIA = {
     caption: "Reverse crunch"
   },
   "garhammer-raise": {
-    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Bodyweight-hanging-knee-raises-side.jpg&w=3840",
-    sourceUrl: "https://staging.musclewiki.com/exercise/hanging-knee-raises",
-    sourceName: "MuscleWiki",
-    caption: "Hanging knee raise reference for Garhammer raises"
+    imageUrl: "https://img.youtube.com/vi/5ofUYbge_hg/hqdefault.jpg",
+    embedUrl: "https://www.youtube-nocookie.com/embed/5ofUYbge_hg?autoplay=1&mute=1&loop=1&playlist=5ofUYbge_hg&playsinline=1&controls=1&rel=0",
+    sourceUrl: "https://www.youtube.com/watch?v=5ofUYbge_hg",
+    sourceName: "Winning Strength",
+    caption: "Garhammer Raise exercise technique"
   },
   "pec-deck": {
     imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Machine-machine-bent-arm-pec-fly-side.jpg&w=3840",
