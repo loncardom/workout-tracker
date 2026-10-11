@@ -314,10 +314,11 @@ h1 { margin: 0; font-size: 21px; line-height: 1.1; font-weight: 650; }
 .detail-overlay {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 5000;
   display: grid;
   align-items: end;
-  background: rgba(14,18,24,.35);
+  --detail-backdrop-alpha: .35;
+  background: rgba(14,18,24,var(--detail-backdrop-alpha));
   backdrop-filter: blur(3px);
 }
 
@@ -816,3 +817,48 @@ body.detail-modal-open {
 .cooldown-orange { background: #f97316; }
 .cooldown-yellow { background: #eab308; }
 .cooldown-green { background: #22c55e; }
+
+
+/* Exercise modal layering and drag-to-close */
+.detail-overlay {
+  pointer-events: auto;
+  transition: background-color .18s ease;
+}
+
+.detail-overlay.detail-overlay-closing {
+  --detail-backdrop-alpha: 0 !important;
+}
+
+.detail-sheet {
+  position: relative;
+  z-index: 1;
+  transform: translateY(0);
+  will-change: transform;
+}
+
+.detail-sheet-dragging {
+  transition: none !important;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.detail-sheet-snapping {
+  transition: transform .18s ease-out;
+}
+
+.detail-sheet-closing {
+  transition: transform .2s ease-in;
+}
+
+.detail-handle,
+.detail-top {
+  touch-action: none;
+}
+
+.detail-handle {
+  cursor: grab;
+}
+
+.detail-sheet-dragging .detail-handle {
+  cursor: grabbing;
+}
