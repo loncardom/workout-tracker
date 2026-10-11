@@ -226,6 +226,19 @@
     }
 
     if (!compact) {
+      if (media.embedUrl) {
+        return `
+          <iframe
+            class="exercise-demo-embed"
+            src="${esc(media.embedUrl)}"
+            title="${esc(media.caption || ex.name)} animated exercise demonstration"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy">
+          </iframe>
+        `;
+      }
+
       const videoUrl = muscleWikiVideoUrl(media);
       if (videoUrl) {
         return `
