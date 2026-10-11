@@ -756,12 +756,115 @@
     document.body.appendChild(overlay);
     lockModalScroll();
 
-    const closeDetail = () => {
+    const sheet = overlay.querySelector(".detail-sheet");
+    const dragTargets = [
+      overlay.querySelector(".detail-handle"),
+      overlay.querySelector(".detail-top")
+    ].filter(Boolean);
+
+    let dragStartY = 0;
+    let dragLastY = 0;
+    let dragLastTime = 0;
+    let dragVelocity = 0;
+    let dragging = false;
+    let closing = false;
+
+    const finishClose = () => {
+      if (closing) return;
+      closing = true;
       overlay.remove();
       unlockModalScroll();
     };
 
-    overlay.querySelector(".close-detail").onclick = closeDetail;
+    const closeDetail = (animate = false) => {
+      if (closing) return;
+
+      if (!animate) {
+        finishClose();
+        return;
+      }
+
+      closing = true;
+      sheet.classList.add("detail-sheet-closing");
+      sheet.style.transform = "translateY(105vh)";
+      overlay.classList.add("detail-overlay-closing");
+      window.setTimeout(() => {
+        overlay.remove();
+        unlockModalScroll();
+      }, 220);
+    };
+
+    const resetDrag = () => {
+      dragging = false;
+      sheet.classList.remove("detail-sheet-dragging");
+      sheet.style.transform = "";
+      overlay.style.setProperty("--detail-backdrop-alpha", "0.35");
+    };
+
+    const startDrag = event => {
+      if (closing || event.button > 0) return;
+      dragging = true;
+      dragStartY = event.clientY;
+      dragLastY = event.clientY;
+      dragLastTime = performance.now();
+      dragVelocity = 0;
+      sheet.classList.add("detail-sheet-dragging");
+
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      } catch {}
+    };
+
+    const moveDrag = event => {
+      if (!dragging || closing) return;
+
+      const delta = Math.max(0, event.clientY - dragStartY);
+      const now = performance.now();
+      const elapsed = Math.max(1, now - dragLastTime);
+      dragVelocity = (event.clientY - dragLastY) / elapsed;
+      dragLastY = event.clientY;
+      dragLastTime = now;
+
+      sheet.style.transform = "translateY(" + delta + "px)";
+      const fade = Math.max(0, 1 - delta / 360);
+      overlay.style.setProperty("--detail-backdrop-alpha", String(0.35 * fade));
+      event.preventDefault();
+    };
+
+    const endDrag = event => {
+      if (!dragging || closing) return;
+
+      const delta = Math.max(0, event.clientY - dragStartY);
+      dragging = false;
+
+      try {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      } catch {}
+
+      if (delta >= 90 || (delta >= 36 && dragVelocity > 0.55)) {
+        sheet.classList.remove("detail-sheet-dragging");
+        closeDetail(true);
+        return;
+      }
+
+      sheet.classList.remove("detail-sheet-dragging");
+      sheet.classList.add("detail-sheet-snapping");
+      sheet.style.transform = "translateY(0)";
+      overlay.style.setProperty("--detail-backdrop-alpha", "0.35");
+      window.setTimeout(() => {
+        sheet.classList.remove("detail-sheet-snapping");
+        sheet.style.transform = "";
+      }, 180);
+    };
+
+    dragTargets.forEach(target => {
+      target.addEventListener("pointerdown", startDrag);
+      target.addEventListener("pointermove", moveDrag);
+      target.addEventListener("pointerup", endDrag);
+      target.addEventListener("pointercancel", resetDrag);
+    });
+
+    overlay.querySelector(".close-detail").onclick = () => closeDetail();
     overlay.addEventListener("click", event => {
       if (event.target === overlay) closeDetail();
     });
