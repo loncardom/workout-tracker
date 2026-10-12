@@ -410,10 +410,11 @@ window.WORKOUTS = [
 
 window.EXERCISE_MEDIA = {
   "barbell-bench-press": {
-    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-bench-press-side.jpg&w=3840",
-    sourceUrl: "https://musclewiki.com/exercise/barbell-bench-press",
-    sourceName: "MuscleWiki",
-    caption: "Barbell bench press"
+    imageUrl: "https://img.youtube.com/vi/lWFknlOTbyM/hqdefault.jpg",
+    embedUrl: "https://www.youtube-nocookie.com/embed/lWFknlOTbyM?autoplay=1&mute=1&loop=1&playlist=lWFknlOTbyM&playsinline=1&controls=1&rel=0",
+    sourceUrl: "https://www.youtube.com/watch?v=lWFknlOTbyM",
+    sourceName: "Max Euceda",
+    caption: "Barbell bench press exercise tutorial"
   },
   "barbell-overhead-press": {
     imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-overhead-press-side.jpg&w=3840",
@@ -422,16 +423,18 @@ window.EXERCISE_MEDIA = {
     caption: "Barbell overhead press"
   },
   "pull-ups": {
-    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Bodyweight-pull-up-front.jpg&w=3840",
-    sourceUrl: "https://musclewiki.com/exercise/pull-up",
-    sourceName: "MuscleWiki",
-    caption: "Pull-up"
+    imageUrl: "https://img.youtube.com/vi/l6-aIZTbAR0/hqdefault.jpg",
+    embedUrl: "https://www.youtube-nocookie.com/embed/l6-aIZTbAR0?autoplay=1&mute=1&loop=1&playlist=l6-aIZTbAR0&playsinline=1&controls=1&rel=0",
+    sourceUrl: "https://www.youtube.com/watch?v=l6-aIZTbAR0",
+    sourceName: "Summerfunfitness",
+    caption: "Pull-up technique tutorial"
   },
   "barbell-row": {
-    imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-bent-over-row-side.jpg&w=3840",
-    sourceUrl: "https://musclewiki.com/exercise/barbell-bent-over-row",
-    sourceName: "MuscleWiki",
-    caption: "Barbell row"
+    imageUrl: "https://img.youtube.com/vi/FWJR5Ve8bnQ/hqdefault.jpg",
+    embedUrl: "https://www.youtube-nocookie.com/embed/FWJR5Ve8bnQ?autoplay=1&mute=1&loop=1&playlist=FWJR5Ve8bnQ&playsinline=1&controls=1&rel=0",
+    sourceUrl: "https://www.youtube.com/watch?v=FWJR5Ve8bnQ",
+    sourceName: "Max Euceda",
+    caption: "Bent-over barbell row exercise tutorial"
   },
   "barbell-deadlift": {
     imageUrl: "https://musclewiki.com/_next/image?q=75&url=%2Fapi-next%2Fimages%2Fog-male-Barbell-barbell-deadlift-side.jpg&w=3840",
