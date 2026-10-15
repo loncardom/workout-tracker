@@ -495,6 +495,86 @@ window.WORKOUTS = [
 ];
 
 window.EXERCISE_MEDIA = {
+  "travel-push-up": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Pushups/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Pushups/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Pushups/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Pushups.json",
+    sourceName: "Free Exercise DB",
+    caption: "Push-up"
+  },
+  "travel-incline-push-up": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Push-Up/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Push-Up/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Push-Up/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Incline_Push-Up.json",
+    sourceName: "Free Exercise DB",
+    caption: "Incline push-up"
+  },
+  "travel-backpack-row": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Bent_Over_Two-Dumbbell_Row.json",
+    sourceName: "Free Exercise DB",
+    caption: "Bent-over row movement reference; use a backpack for Travel"
+  },
+  "travel-split-squat": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Split_Squats/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Split_Squats/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Split_Squats/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Split_Squats.json",
+    sourceName: "Free Exercise DB",
+    caption: "Split squat"
+  },
+  "travel-single-leg-glute-bridge": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Single_Leg_Glute_Bridge/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Single_Leg_Glute_Bridge/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Single_Leg_Glute_Bridge/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Single_Leg_Glute_Bridge.json",
+    sourceName: "Free Exercise DB",
+    caption: "Single-leg glute bridge"
+  },
+  "travel-water-bottle-lateral-raise": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Lateral_Raise/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Lateral_Raise/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Lateral_Raise/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Side_Lateral_Raise.json",
+    sourceName: "Free Exercise DB",
+    caption: "Lateral raise movement reference; use water bottles for Travel"
+  },
+  "travel-standing-calf-raise": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Calf_Raises/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Calf_Raises/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Calf_Raises/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Standing_Calf_Raises.json",
+    sourceName: "Free Exercise DB",
+    caption: "Standing calf raise"
+  },
+  "travel-dead-bug": {
+    imageUrl: "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dead_Bug/0.jpg",
+    frames: [
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dead_Bug/0.jpg",
+      "https://raw.githubusercontent.com/yuhonas/free-exercise-db/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dead_Bug/1.jpg"
+    ],
+    sourceUrl: "https://github.com/yuhonas/free-exercise-db/blob/f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Dead_Bug.json",
+    sourceName: "Free Exercise DB",
+    caption: "Dead bug"
+  },
   "barbell-bench-press": {
     imageUrl: "https://img.youtube.com/vi/lWFknlOTbyM/hqdefault.jpg",
     embedUrl: "https://www.youtube-nocookie.com/embed/lWFknlOTbyM?autoplay=1&mute=1&loop=1&playlist=lWFknlOTbyM&playsinline=1&controls=1&rel=0",
