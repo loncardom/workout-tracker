@@ -87,4 +87,17 @@
     secondary: ["Hip flexors"],
     note: "Enter 0 lb when performed as bodyweight, or log any added resistance."
   };
+
+  window.EXERCISE_VARIANTS["travel-incline-push-up"] = {
+    id: "travel-incline-push-up",
+    name: "Incline Push-Ups",
+    unit: "lb",
+    equipment: "Bed, bench, table, or other sturdy elevated surface",
+    targetSets: 2,
+    reps: "8–20",
+    primary: ["Chest", "Triceps"],
+    secondary: ["Front delts", "Core"],
+    note: "Enter 0 lb for bodyweight. Use a higher surface to make the movement easier."
+  };
+
 })();
