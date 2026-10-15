@@ -377,6 +377,15 @@
             </span>
             <span class="chevron">›</span>
           </button>
+          <button class="routine-row specialty-row" data-routine="travel">
+            <span class="routine-index specialty-icon">T</span>
+            <span class="routine-main">
+              <strong>Travel</strong>
+              <span>7 movements · minimal equipment · fully trackable</span>
+              ${lastRoutineSession("travel") ? `<small>Last: ${formatDate(lastRoutineSession("travel").completedAt)}</small>` : ""}
+            </span>
+            <span class="chevron">›</span>
+          </button>
         </div>
       </section>
 
