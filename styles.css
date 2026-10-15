@@ -872,3 +872,55 @@ body.detail-modal-open {
   border-radius: 18px;
   background: #000;
 }
+
+
+/* Two-frame exercise demos */
+.exercise-frame-animation {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(52vh, 430px);
+  overflow: hidden;
+  border: 1px solid #eceef1;
+  border-radius: 18px;
+  background: #f3f5f8;
+}
+
+.exercise-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+
+.exercise-frame-a {
+  animation: exerciseFrameA 1.5s steps(1, end) infinite;
+}
+
+.exercise-frame-b {
+  animation: exerciseFrameB 1.5s steps(1, end) infinite;
+}
+
+@keyframes exerciseFrameA {
+  0%, 49.999% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes exerciseFrameB {
+  0%, 49.999% { opacity: 0; }
+  50%, 100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exercise-frame-a,
+  .exercise-frame-b {
+    animation: none;
+  }
+
+  .exercise-frame-b {
+    display: none;
+  }
+}
