@@ -221,11 +221,22 @@
 
   function exerciseImage(ex, compact = false) {
     const media = exerciseMedia(ex.exerciseId);
-    if (!media?.imageUrl) {
+    const poster = media?.imageUrl || media?.frames?.[0];
+
+    if (!poster) {
       return `<span class="photo-fallback">${esc(ex.name.slice(0, 1))}</span>`;
     }
 
     if (!compact) {
+      if (media.frames?.length > 1) {
+        return `
+          <div class="exercise-frame-animation" role="img" aria-label="${esc(media.caption || ex.name)} animated exercise demonstration">
+            <img class="exercise-frame exercise-frame-a" src="${esc(media.frames[0])}" alt="" loading="eager" referrerpolicy="no-referrer">
+            <img class="exercise-frame exercise-frame-b" src="${esc(media.frames[1])}" alt="" loading="eager" referrerpolicy="no-referrer">
+          </div>
+        `;
+      }
+
       if (media.embedUrl) {
         return `
           <iframe
@@ -245,7 +256,7 @@
           <video
             class="exercise-demo-video"
             src="${esc(videoUrl)}"
-            poster="${esc(media.imageUrl)}"
+            poster="${esc(poster)}"
             autoplay
             muted
             loop
@@ -260,7 +271,7 @@
     return `
       <img
         class="exercise-photo ${compact ? "compact" : ""}"
-        src="${esc(media.imageUrl)}"
+        src="${esc(poster)}"
         alt="${esc(media.caption || ex.name)}"
         loading="lazy"
         referrerpolicy="no-referrer"
