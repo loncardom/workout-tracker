@@ -405,6 +405,92 @@ window.WORKOUTS = [
         note: "Squat."
       }
     ]
+  },
+  {
+    id: "travel",
+    name: "Travel",
+    specialty: true,
+    description: "Minimal-equipment full-body travel workout",
+    exercises: [
+      {
+        id: "travel-push-up",
+        name: "Push-Ups",
+        unit: "lb",
+        equipment: "Floor",
+        targetSets: 2,
+        reps: "8–20",
+        primary: ["Chest", "Triceps"],
+        secondary: ["Front delts", "Core"],
+        alternativeIds: ["travel-incline-push-up"],
+        note: "Enter 0 lb for bodyweight. Switch to incline push-ups when you want an easier variation."
+      },
+      {
+        id: "travel-backpack-row",
+        name: "Backpack Rows",
+        unit: "lb",
+        equipment: "Loaded backpack",
+        targetSets: 2,
+        reps: "12–20",
+        primary: ["Back", "Biceps"],
+        secondary: ["Rear delts"],
+        note: "Log the approximate backpack weight."
+      },
+      {
+        id: "travel-split-squat",
+        name: "Split Squats",
+        unit: "lb",
+        equipment: "Bodyweight / backpack",
+        targetSets: 2,
+        reps: "10–20 per leg",
+        primary: ["Quads", "Glutes"],
+        secondary: ["Hamstrings"],
+        note: "Enter 0 lb for bodyweight, or log added backpack weight."
+      },
+      {
+        id: "travel-single-leg-glute-bridge",
+        name: "Single-Leg Glute Bridges",
+        unit: "lb",
+        equipment: "Floor",
+        targetSets: 2,
+        reps: "12–20 per leg",
+        primary: ["Glutes", "Hamstrings"],
+        secondary: ["Core"],
+        note: "Enter 0 lb when performed as bodyweight."
+      },
+      {
+        id: "travel-water-bottle-lateral-raise",
+        name: "Lateral Raises with Water Bottles",
+        unit: "lb",
+        equipment: "Water bottles",
+        targetSets: 2,
+        reps: "15–25",
+        primary: ["Shoulders"],
+        secondary: ["Upper traps"],
+        note: "Log the combined or per-hand weight consistently each time."
+      },
+      {
+        id: "travel-standing-calf-raise",
+        name: "Standing Calf Raises",
+        unit: "lb",
+        equipment: "Bodyweight / backpack",
+        targetSets: 2,
+        reps: "15–25",
+        primary: ["Calves"],
+        secondary: [],
+        note: "Enter 0 lb for bodyweight, or log added backpack weight."
+      },
+      {
+        id: "travel-dead-bug",
+        name: "Dead Bugs",
+        unit: "lb",
+        equipment: "Floor",
+        targetSets: 2,
+        reps: "10–15 per side",
+        primary: ["Core"],
+        secondary: ["Hip flexors"],
+        note: "Enter 0 lb when performed as bodyweight."
+      }
+    ]
   }
 ];
 
